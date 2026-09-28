@@ -1,0 +1,152 @@
+.decrypt-panel {
+    position: fixed;
+    bottom: 0;
+    left: 200px;
+    right: 0;
+    height: 70%;
+    background-color: var(--surface-color);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: 20px 24px;
+    transform: translateY(100%);
+    transition: transform var(--transition-slow);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    z-index: 10;
+    box-shadow: var(--shadow-lg);
+}
+
+.decrypt-panel.show {
+    transform: translateY(0);
+}
+
+.decrypt-panel.show ~ .content-area .add-btn,
+.decrypt-panel.show ~ .content-area .cancel-all-btn {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.decrypt-dropzone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+    user-select: none;
+}
+
+.decrypt-dropzone:hover,
+.decrypt-dropzone.dragover {
+    border-color: var(--primary-color);
+    background-color: var(--primary-lighter);
+    color: var(--primary-color);
+}
+
+.decrypt-plus {
+    flex-shrink: 0;
+}
+
+.decrypt-hint {
+    font-size: var(--text-md);
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.decrypt-sub {
+    font-size: var(--text-sm);
+    color: var(--text-quaternary);
+}
+
+.decrypt-count {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    text-align: center;
+}
+
+.decrypt-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    animation: slideIn var(--transition-normal);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.decrypt-card-name {
+    flex: 1;
+    font-size: var(--text-md);
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.decrypt-card-status {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+}
+
+.decrypt-card-status svg {
+    width: 18px;
+    height: 18px;
+}
+
+.decrypt-card.success {
+    border-color: var(--success-color);
+    background-color: var(--success-bg);
+}
+
+.decrypt-card.success .decrypt-card-status {
+    color: var(--success-color);
+}
+
+.decrypt-card.fail {
+    border-color: var(--danger-color);
+    background-color: var(--danger-bg);
+}
+
+.decrypt-card.fail .decrypt-card-status {
+    color: var(--danger-color);
+}
+
+.decrypt-card.removing {
+    animation: decryptSlideOut 0.3s ease forwards;
+}
+
+.decrypt-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: decryptSpin 0.8s linear infinite;
+}
+
+@keyframes decryptSpin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes decryptSlideOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
+}

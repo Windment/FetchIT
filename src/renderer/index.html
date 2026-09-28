@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FetchIT</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/tasks.css">
+    <link rel="stylesheet" href="css/preset-card.css">
+    <link rel="stylesheet" href="css/preset-options.css">
+    <link rel="stylesheet" href="css/error-panel.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/modals.css">
+    <link rel="stylesheet" href="css/cookie-manager.css">
+    <link rel="stylesheet" href="css/decrypt.css">
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite">
+        <symbol id="icon-default" viewBox="0 0 24 24"><path d="M13 3L13.7071 2.29289C13.5196 2.10536 13.2652 2 13 2V3ZM14 22C14.5523 22 15 21.5523 15 21C15 20.4477 14.5523 20 14 20V22ZM19 9H20C20 8.73478 19.8946 8.48043 19.7071 8.29289L19 9ZM18 10C18 10.5523 18.4477 11 19 11C19.5523 11 20 10.5523 20 10H18ZM5.21799 19.908L4.32698 20.362H4.32698L5.21799 19.908ZM6.09202 20.782L6.54601 19.891L6.54601 19.891L6.09202 20.782ZM6.09202 3.21799L5.63803 2.32698L5.63803 2.32698L6.09202 3.21799ZM5.21799 4.09202L4.32698 3.63803L4.32698 3.63803L5.21799 4.09202ZM13.109 8.45399L14 8V8L13.109 8.45399ZM13.546 8.89101L14 8L13.546 8.89101ZM9 16C8.44772 16 8 16.4477 8 17C8 17.5523 8.44772 18 9 18V16ZM12 18C12.5523 18 13 17.5523 13 17C13 16.4477 12.5523 16 12 16V18ZM9 12C8.44772 12 8 12.4477 8 13C8 13.5523 8.44772 14 9 14V12ZM13 14C13.5523 14 14 13.5523 14 13C14 12.4477 13.5523 12 13 12V14ZM9 8C8.44772 8 8 8.44772 8 9C8 9.55228 8.44772 10 9 10V8ZM10 10C10.5523 10 11 9.55228 11 9C11 8.44772 10.5523 8 10 8V10ZM17.2299 17.7929C16.8394 18.1834 16.8394 18.8166 17.2299 19.2071C17.6204 19.5976 18.2536 19.5976 18.6441 19.2071L17.2299 17.7929ZM15.0316 15.2507C14.8939 15.7856 15.2159 16.3308 15.7507 16.4684C16.2856 16.6061 16.8308 16.2841 16.9684 15.7493L15.0316 15.2507ZM17.9375 20C17.3852 20 16.9375 20.4477 16.9375 21C16.9375 21.5523 17.3852 22 17.9375 22V20ZM17.9475 22C18.4998 22 18.9475 21.5523 18.9475 21C18.9475 20.4477 18.4998 20 17.9475 20V22ZM13 2H8.2V4H13V2ZM4 6.2V17.8H6V6.2H4ZM8.2 22H14V20H8.2V22ZM19.7071 8.29289L13.7071 2.29289L12.2929 3.70711L18.2929 9.70711L19.7071 8.29289ZM20 10V9H18V10H20ZM4 17.8C4 18.3436 3.99922 18.8114 4.03057 19.195C4.06287 19.5904 4.13419 19.9836 4.32698 20.362L6.10899 19.454C6.0838 19.4045 6.04612 19.3038 6.02393 19.0322C6.00078 18.7488 6 18.3766 6 17.8H4ZM8.2 20C7.62345 20 7.25117 19.9992 6.96784 19.9761C6.69617 19.9539 6.59545 19.9162 6.54601 19.891L5.63803 21.673C6.01641 21.8658 6.40963 21.9371 6.80497 21.9694C7.18864 22.0008 7.65645 22 8.2 22V20ZM4.32698 20.362C4.6146 20.9265 5.07354 21.3854 5.63803 21.673L6.54601 19.891C6.35785 19.7951 6.20487 19.6422 6.10899 19.454L4.32698 20.362ZM8.2 2C7.65645 2 7.18864 1.99922 6.80497 2.03057C6.40963 2.06287 6.01641 2.13419 5.63803 2.32698L6.54601 4.10899C6.59545 4.0838 6.69617 4.04612 6.96784 4.02393C7.25117 4.00078 7.62345 4 8.2 4V2ZM6 6.2C6 5.62345 6.00078 5.25117 6.02393 4.96784C6.04612 4.69617 6.0838 4.59545 6.10899 4.54601L4.32698 3.63803C4.13419 4.01641 4.06287 4.40963 4.03057 4.80497C3.99922 5.18864 4 5.65645 4 6.2H6ZM5.63803 2.32698C5.07354 2.6146 4.6146 3.07354 4.32698 3.63803L6.10899 4.54601C6.20487 4.35785 6.35785 4.20487 6.54601 4.10899L5.63803 2.32698ZM12 3V7.4H14V3H12ZM14.6 10H19V8H14.6V10ZM12 7.4C12 7.66353 11.9992 7.92131 12.0169 8.13823C12.0356 8.36682 12.0797 8.63656 12.218 8.90798L14 8C14.0293 8.05751 14.0189 8.08028 14.0103 7.97537C14.0008 7.85878 14 7.69653 14 7.4H12ZM14.6 8C14.3035 8 14.1412 7.99922 14.0246 7.9897C13.9197 7.98113 13.9425 7.9707 14 8L13.092 9.78201C13.3634 9.92031 13.6332 9.96438 13.8618 9.98305C14.0787 10.0008 14.3365 10 14.6 10V8ZM12.218 8.90798C12.4097 9.2843 12.7157 9.59027 13.092 9.78201L14 8V8L12.218 8.90798ZM9 18H12V16H9V18ZM9 14H13V12H9V14ZM9 10H10V8H9V10ZM18.937 16C18.937 16.1732 18.8915 16.3053 18.6175 16.5697C18.4638 16.718 18.2828 16.8653 18.0319 17.074C17.7936 17.2723 17.5141 17.5087 17.2299 17.7929L18.6441 19.2071C18.86 18.9913 19.0805 18.8033 19.3109 18.6116C19.5287 18.4305 19.7852 18.2223 20.0065 18.0087C20.4825 17.5493 20.937 16.9314 20.937 16H18.937ZM17.937 15C18.4893 15 18.937 15.4477 18.937 16H20.937C20.937 14.3431 19.5938 13 17.937 13V15ZM16.9684 15.7493C17.0795 15.3177 17.4724 15 17.937 15V13C16.5377 13 15.3645 13.957 15.0316 15.2507L16.9684 15.7493ZM17.9375 22H17.9475V20H17.9375V22Z" fill="currentColor"/></symbol>
+        <symbol id="icon-video" viewBox="0 0 512 512"><path d="M378.409,0H208.294h-13.176l-9.314,9.314L57.017,138.102l-9.315,9.314v13.176v265.513c0,47.361,38.528,85.896,85.896,85.896h244.811c47.361,0,85.888-38.535,85.888-85.896V85.895C464.298,38.528,425.77,0,378.409,0z M432.494,426.104c0,29.877-24.214,54.092-54.084,54.092H133.598c-29.877,0-54.091-24.215-54.091-54.092V160.591h83.717c24.884,0,45.07-20.179,45.07-45.07V31.804h170.115c29.87,0,54.084,24.214,54.084,54.091V426.104z" fill="currentColor"/><path d="M228.222,229.171c-0.705-0.406-1.557-0.426-2.262-0.035c-0.712,0.391-1.117,1.131-1.117,1.948v56.73v56.752c0,0.817,0.405,1.544,1.117,1.928c0.705,0.412,1.557,0.391,2.262,0l95.042-56.766c0.677-0.405,1.082-1.131,1.082-1.914c0-0.775-0.404-1.522-1.082-1.906L228.222,229.171z" fill="currentColor"/></symbol>
+        <symbol id="icon-audio" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V7C19 7.55228 19.4477 8 20 8C20.5523 8 21 7.55228 21 7V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM12.5 24C13.8807 24 15 22.8807 15 21.5V12.8673L20 12.153V18.05C19.8384 18.0172 19.6712 18 19.5 18C18.1193 18 17 19.1193 17 20.5C17 21.8807 18.1193 23 19.5 23C20.8807 23 22 21.8807 22 20.5V11C22 10.7101 21.8742 10.4345 21.6552 10.2445C21.4362 10.0546 21.1456 9.96905 20.8586 10.0101L13.8586 11.0101C13.3659 11.0804 13 11.5023 13 12V19.05C12.8384 19.0172 12.6712 19 12.5 19C11.1193 19 10 20.1193 10 21.5C10 22.8807 11.1193 24 12.5 24Z" fill="currentColor"/></symbol>
+        <symbol id="icon-none" viewBox="0 0 64 64"><path d="M32 2C15.432 2 2 15.432 2 32.001C2 48.567 15.432 62 32 62s30-13.433 30-29.999C62 15.432 48.568 2 32 2zm22 30.001c0 4.629-1.433 8.922-3.876 12.465l-30.591-30.59A21.889 21.889 0 0 1 32 10c12.15 0 22 9.851 22 22.001zm-44 0a21.9 21.9 0 0 1 3.876-12.468l30.591 30.591A21.887 21.887 0 0 1 32 54.001c-12.15,0-22-9.852-22-22z" fill="currentColor"/></symbol>
+        <symbol id="icon-jpg" viewBox="0 0 24 24"><path d="M4 4C4 3.44772 4.44772 3 5 3H14H14.5858C14.851 3 15.1054 3.10536 15.2929 3.29289L19.7071 7.70711C19.8946 7.89464 20 8.149 20 8.41421V20C20 20.5523 19.5523 21 5 21C4.44772 21 4 20.5523 4 20V4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 8H15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 17L10.5 15.5M10.5 15.5L10.5 13L11.25 13C11.9404 13 12.5 13.5596 12.5 14.25V14.25C12.5 14.9404 11.9404 15.5 11.25 15.5H10.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 13L8.5 14.5L8.5 16C8.5 16.5523 8.05228 17 7.5 17V17C6.94772 17 6.5 16.5523 6.5 16L6.5 15.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 13H15.5C14.9477 13 14.5 13.4477 14.5 14V16C14.5 16.5523 14.9477 17 15.5 17H16C16.5523 17 17 16.5523 17 16V15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 15.5H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="icon-png" viewBox="0 0 24 24"><path d="M4 4C4 3.44772 4.44772 3 5 3H14H14.5858C14.851 3 15.1054 3.10536 15.2929 3.29289L19.7071 7.70711C19.8946 7.89464 20 8.149 20 8.41421V20C20 20.5523 19.5523 21 19 21H5C4.44772 21 4 20.5523 4 20V4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 8H15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 17V15.5M6.5 15.5V13L7.25 13C7.94036 13 8.5 13.5596 8.5 14.25V14.25C8.5 14.9404 7.94036 15.5 7.25 15.5H6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13H16C15.4477 13 15 13.4477 15 14V16C15 16.5523 15.4477 17 16 17H16.5C17.0523 17 17.5 16.5523 17.5 16V15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 15.5H17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 17V13L13 17V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="icon-webp" viewBox="0 0 24 24"><path d="M8 11H10M8 18L11 15L13 17L16 14M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="icon-cookie" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 16H9.01M12 11H12.01M7 10H7.01M15 16H15.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C12 5.76142 13.7909 8 16 8C16 10.2091 18.2386 12 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+        <symbol id="icon-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 5"></path>
+            <circle cx="12" cy="17" r="1" fill="currentColor"></circle>
+        </symbol>
+        <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </symbol>
+        <symbol id="icon-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </symbol>
+        <symbol id="icon-empty" viewBox="0 0 16 16">
+            <g transform="translate(0 1)" fill="currentColor">
+                <path d="M7.953,13 L1.027,13 C0.65,13 0.311,12.769 0.16,12.411 C0.009,12.053 0.076,11.636 0.328,11.348 L5.859,4.973 L0.988,4.973 C0.465,4.973 -2.27373675e-13,4.572 -2.27373675e-13,4.028 C-2.27373675e-13,3.483 0.425,3.043 0.947,3.043 L7.973,3.043 C8.347,3.043 8.689,3.273 8.839,3.632 C8.989,3.991 8.924,4.406 8.671,4.695 L3.179,11.082 L7.952,11.082 C8.475,11.082 8.899,11.471 8.899,12.015 C8.9,12.559 8.477,13 7.953,13 L7.953,13 Z"/>
+                <path d="M15.755,7.935 L9.701,7.935 C9.447,7.935 9.219,7.783 9.115,7.544 C9.011,7.307 9.053,7.027 9.222,6.833 L14.338,0.964 L9.338,0.964 C8.984,0.964 9.02,0.034 9.373,0.034 L15.471,0.034 C15.724,0.034 15.917,0.151 16.021,0.388 C16.126,0.625 16.083,0.905 15.914,1.1 L10.88,6.963 L15.755,6.963 C16.109,6.964 16.109,7.935 15.755,7.935 L15.755,7.935 Z"/>
+            </g>
+        </symbol>
+    </svg>
+    <div class="title-bar">
+        <div class="app-name">FetchIT</div>
+        <div class="window-controls">
+            <button class="control-btn" id="aboutBtn" title="关于">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 17V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="12" cy="8" r="1" fill="currentColor"/>
+                    <path d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+            </button>
+            <button class="control-btn" id="cookieManagerBtn" title="Cookie管理">
+                <svg width="16" height="16" viewBox="0 0 24 24"><use href="#icon-cookie"/></svg>
+            </button>
+            <button class="control-btn" id="openFolderBtn" title="打开输出文件夹">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </button>
+            <button class="control-btn" id="settingsBtn" title="设置">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+            <button class="control-btn" id="minimizeBtn" title="最小化">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+            </button>
+            <button class="control-btn close-btn" id="closeBtn" title="关闭">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <aside class="sidebar" aria-label="主导航">
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">下载模式</div>
+                <nav class="mode-nav">
+                    <button class="mode-btn active" id="normalModeBtn" aria-label="常规模式">
+                        <svg class="mode-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span class="mode-btn-text">常规</span>
+                    </button>
+                    <button class="mode-btn" id="listModeBtn" aria-label="列表模式">
+                        <svg class="mode-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <circle cx="3.5" cy="6" r="1.5" fill="currentColor"></circle>
+                            <circle cx="3.5" cy="12" r="1.5" fill="currentColor"></circle>
+                            <circle cx="3.5" cy="18" r="1.5" fill="currentColor"></circle>
+                        </svg>
+                        <span class="mode-btn-text">列表</span>
+                    </button>
+                    <button class="mode-btn" id="directModeBtn" aria-label="直链模式">
+                        <svg class="mode-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        <span class="mode-btn-text">直链</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">音乐解密</div>
+                <nav class="mode-nav">
+                    <button class="mode-btn" id="decryptModeBtn" aria-label="音乐解密">
+                        <svg class="mode-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                        <span class="mode-btn-text">音乐解密</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">任务状态</div>
+                <div class="stat-card" id="queueCount" role="status" aria-label="队列任务数">
+                    <div class="stat-icon stat-icon-queue" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="-1.6 -1.6 19.20 19.20" fill="currentColor">
+                            <path d="M2.23 2.674a.75.75 0 00-.96 1.152L3.578 5.75 1.27 7.674a.75.75 0 00.96 1.152l3-2.5a.75.75 0 000-1.152l-3-2.5zM8.25 5a.75.75 0 000 1.5h6a.75.75 0 000-1.5h-6zM5.5 9.25a.75.75 0 01.75-.75h8a.75.75 0 010 1.5h-8a.75.75 0 01-.75-.75zM6.25 12a.75.75 0 000 1.5h8a.75.75 0 000-1.5h-8z"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="queueNumber">0</div>
+                        <div class="stat-label">队列中</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-clickable" id="errorCount" role="button" tabindex="0" aria-label="查看失败任务">
+                    <div class="stat-icon stat-icon-error" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <circle cx="12" cy="16" r="1" fill="currentColor"></circle>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="errorNumber">0</div>
+                        <div class="stat-label">失败数</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="content-area">
+            <div class="tasks-empty" id="tasksEmpty">
+                <svg width="64" height="64" viewBox="0 0 16 16"><use href="#icon-empty"/></svg>
+                <div class="tasks-empty-title">还没有任务</div>
+                <div class="tasks-empty-desc">点击右下角的按钮添加一个吧</div>
+            </div>
+            <div class="tasks-container" id="tasksContainer"></div>
+            <button class="add-btn" id="addBtn" aria-label="添加任务">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+            </button>
+            <button class="cancel-all-btn is-hidden" id="cancelAllBtn" aria-label="取消全部任务">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="preset-card" id="presetCard">
+        <div class="preset-header">
+            <textarea id="urlInput" placeholder="输入链接，一行一个"></textarea>
+            <div class="preset-header-buttons">
+                <button class="paste-btn" id="pasteBtn" title="粘贴链接">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    </svg>
+                </button>
+                <button class="advanced-btn" id="advancedBtn" title="高级选项">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="advanced-options" id="advancedOptions">
+            <div class="advanced-header">
+                <h3>高级选项</h3>
+                <button class="close-advanced-btn" id="closeAdvancedBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+                </button>
+            </div>
+            <div class="advanced-content">
+                <div class="advanced-item">
+                    <div class="advanced-row">
+                        <label class="advanced-label">Cookies</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="advancedCookiesEnabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <button class="advanced-trigger-btn" id="advancedCookiesTrigger" type="button" disabled>
+                        <span class="advanced-trigger-value" id="advancedCookiesTriggerValue">选择 Cookie</span>
+                        <svg class="advanced-trigger-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                    </button>
+                    <input type="hidden" id="advancedCookiesPath">
+                </div>
+                <div class="advanced-item">
+                    <div class="advanced-row">
+                        <label class="advanced-label">User-Agent</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="advancedUserAgentEnabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <input type="text" id="advancedUserAgentValue" class="advanced-input" placeholder="例如: Mozilla/5.0">
+                </div>
+            </div>
+        </div>
+        <div class="direct-hint" id="directHint">请输入文件直链</div>
+        <div class="direct-options" id="directOptions">
+            <div class="direct-item direct-item-full">
+                <label class="direct-label">分片数</label>
+                <input type="number" id="directSegments" class="direct-input" min="1" max="128" value="64">
+            </div>
+            <div class="direct-item">
+                <label class="direct-label">User-Agent</label>
+                <input type="text" id="directUserAgent" class="direct-input" placeholder="非必填">
+            </div>
+            <div class="direct-item">
+                <label class="direct-label">Cookie</label>
+                <input type="text" id="directCookie" class="direct-input" placeholder="非必填">
+            </div>
+            <div class="direct-item direct-item-full">
+                <label class="direct-label">Referer</label>
+                <input type="text" id="directReferer" class="direct-input" placeholder="非必填">
+            </div>
+        </div>
+        <div class="preset-options">
+            <div class="preset-triggers">
+                <button class="preset-trigger-btn" id="formatTrigger" type="button">
+                    <span class="trigger-label">格式</span>
+                    <span class="trigger-value" id="formatTriggerValue">原始</span>
+                    <svg class="trigger-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                </button>
+                <button class="preset-trigger-btn" id="thumbnailTrigger" type="button">
+                    <span class="trigger-label">封面</span>
+                    <span class="trigger-value" id="thumbnailTriggerValue">不保存</span>
+                    <svg class="trigger-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                </button>
+                <button class="preset-trigger-btn" id="codecTrigger" type="button">
+                    <span class="trigger-label">编码</span>
+                    <span class="trigger-value" id="codecTriggerValue">默认</span>
+                    <svg class="trigger-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                </button>
+                <button class="preset-trigger-btn" id="qualityTrigger" type="button">
+                    <span class="trigger-label">质量</span>
+                    <span class="trigger-value" id="qualityTriggerValue">能触及的最佳质量</span>
+                    <svg class="trigger-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                </button>
+            </div>
+            <div class="preset-playlist-items" id="playlistItemsContainer">
+                <span class="preset-group-label">筛选</span>
+                <div class="preset-playlist-options">
+                    <label class="quality-option">
+                        <input type="radio" name="listSelectMode" value="all">
+                        <span class="quality-radio"></span>
+                        <span class="quality-name">解析后全部下载</span>
+                    </label>
+                    <label class="quality-option">
+                        <input type="radio" name="listSelectMode" value="manual" checked>
+                        <span class="quality-radio"></span>
+                        <span class="quality-name">解析后手动筛选</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="selection-panel" id="formatPanel">
+            <div class="selection-panel-header">
+                <button class="selection-back-btn" id="formatBackBtn" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <span class="selection-panel-title">格式</span>
+            </div>
+            <div class="selection-grid">
+                <button class="selection-item active" data-format="original" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-default"/></svg>
+                    <span class="selection-name">原始</span>
+                </button>
+                <button class="selection-item" data-format="mp4" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-video"/></svg>
+                    <span class="selection-name">MP4</span>
+                </button>
+                <button class="selection-item" data-format="mkv" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-video"/></svg>
+                    <span class="selection-name">MKV</span>
+                </button>
+                <button class="selection-item" data-format="mov" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-video"/></svg>
+                    <span class="selection-name">MOV</span>
+                </button>
+                <button class="selection-item" data-format="mp3" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-audio"/></svg>
+                    <span class="selection-name">MP3</span>
+                </button>
+                <button class="selection-item" data-format="m4a" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-audio"/></svg>
+                    <span class="selection-name">M4A</span>
+                </button>
+                <button class="selection-item" data-format="wav" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-audio"/></svg>
+                    <span class="selection-name">WAV</span>
+                </button>
+                <button class="selection-item" data-format="flac" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-audio"/></svg>
+                    <span class="selection-name">FLAC</span>
+                </button>
+            </div>
+        </div>
+        <div class="selection-panel" id="thumbnailPanel">
+            <div class="selection-panel-header">
+                <button class="selection-back-btn" id="thumbnailBackBtn" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <span class="selection-panel-title">封面</span>
+            </div>
+            <div class="selection-grid">
+                <button class="selection-item active" data-thumbnail="none" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-none"/></svg>
+                    <span class="selection-name">不保存</span>
+                </button>
+                <button class="selection-item" data-thumbnail="jpg" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-jpg"/></svg>
+                    <span class="selection-name">JPG</span>
+                </button>
+                <button class="selection-item" data-thumbnail="png" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-png"/></svg>
+                    <span class="selection-name">PNG</span>
+                </button>
+                <button class="selection-item" data-thumbnail="webp" type="button">
+                    <svg class="selection-icon-svg"><use href="#icon-webp"/></svg>
+                    <span class="selection-name">WebP</span>
+                </button>
+            </div>
+        </div>
+        <div class="selection-panel" id="codecPanel">
+            <div class="selection-panel-header">
+                <button class="selection-back-btn" id="codecBackBtn" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <span class="selection-panel-title">编码</span>
+            </div>
+            <div class="selection-list">
+                <label class="codec-option">
+                    <input type="checkbox" value="default" checked>
+                    <span class="codec-checkbox"></span>
+                    <span class="codec-name">默认</span>
+                </label>
+                <label class="codec-option">
+                    <input type="checkbox" value="compatible">
+                    <span class="codec-checkbox"></span>
+                    <span class="codec-name">兼容优先：H.264+AAC</span>
+                </label>
+                <label class="codec-option">
+                    <input type="checkbox" value="custom">
+                    <span class="codec-checkbox"></span>
+                    <span class="codec-name">自定义</span>
+                </label>
+            </div>
+            <div class="codec-custom" id="codecCustomPanel">
+                <div class="codec-custom-group" data-group="video">
+                    <span class="codec-custom-label">视频流</span>
+                    <div class="codec-custom-grid">
+                        <button class="codec-custom-btn active" data-codec="avc" type="button">H.264</button>
+                        <button class="codec-custom-btn" data-codec="hevc" type="button">H.265</button>
+                        <button class="codec-custom-btn" data-codec="av01" type="button">AV1</button>
+                        <button class="codec-custom-btn" data-codec="vp9" type="button">VP9</button>
+                        <button class="codec-custom-btn" data-codec="vp9.2" type="button">VP9.2</button>
+                        <button class="codec-custom-btn" data-codec="vp8" type="button">VP8</button>
+                    </div>
+                </div>
+                <div class="codec-custom-group" data-group="audio">
+                    <span class="codec-custom-label">音频流</span>
+                    <div class="codec-custom-grid">
+                        <button class="codec-custom-btn active" data-codec="aac" type="button">AAC</button>
+                        <button class="codec-custom-btn" data-codec="m4a" type="button">M4A</button>
+                        <button class="codec-custom-btn" data-codec="vorbis" type="button">Vorbis</button>
+                        <button class="codec-custom-btn" data-codec="opus" type="button">Opus</button>
+                        <button class="codec-custom-btn" data-codec="mp3" type="button">MP3</button>
+                        <button class="codec-custom-btn" data-codec="ac3" type="button">AC3</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="selection-panel" id="qualityPanel">
+            <div class="selection-panel-header">
+                <button class="selection-back-btn" id="qualityBackBtn" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <span class="selection-panel-title">质量</span>
+            </div>
+            <div class="selection-list">
+                <label class="quality-option">
+                    <input type="radio" name="qualityMode" value="best" checked>
+                    <span class="quality-radio"></span>
+                    <span class="quality-name">能触及的最佳质量</span>
+                </label>
+                <label class="quality-option">
+                    <input type="radio" name="qualityMode" value="worst">
+                    <span class="quality-radio"></span>
+                    <span class="quality-name">能触及的最差质量</span>
+                </label>
+                <label class="quality-option">
+                    <input type="radio" name="qualityMode" value="custom">
+                    <span class="quality-radio"></span>
+                    <span class="quality-name">自定义</span>
+                </label>
+            </div>
+            <div class="quality-custom" id="qualityCustomPanel">
+                <div class="quality-presets">
+                    <button class="quality-presets-header" type="button">
+                        <span class="quality-presets-label">分辨率偏好</span>
+                        <span class="quality-presets-arrow"></span>
+                    </button>
+                    <div class="quality-presets-body">
+                        <div class="quality-presets-grid">
+                            <button class="quality-preset-btn" data-res="2160" type="button">4K</button>
+                            <button class="quality-preset-btn" data-res="1440" type="button">2K</button>
+                            <button class="quality-preset-btn" data-res="1080" type="button">1080P</button>
+                            <button class="quality-preset-btn" data-res="720" type="button">720P</button>
+                            <button class="quality-preset-btn" data-res="480" type="button">480P</button>
+                            <button class="quality-preset-btn" data-res="360" type="button">360P</button>
+                        </div>
+                        <div class="quality-free-row">
+                            <span class="quality-free-label">自由输入</span>
+                            <input type="text" id="qualityResolution" class="quality-input" placeholder="如 1080">
+                        </div>
+                    </div>
+                </div>
+                <div class="quality-presets">
+                    <button class="quality-presets-header" type="button">
+                        <span class="quality-presets-label">FPS 偏好</span>
+                        <span class="quality-presets-arrow"></span>
+                    </button>
+                    <div class="quality-presets-body">
+                        <div class="quality-presets-grid">
+                            <button class="quality-preset-btn" data-fps="30" type="button">30</button>
+                            <button class="quality-preset-btn" data-fps="60" type="button">60</button>
+                            <button class="quality-preset-btn" data-fps="120" type="button">120</button>
+                            <button class="quality-preset-btn" data-fps="144" type="button">144</button>
+                            <button class="quality-preset-btn" data-fps="240" type="button">240</button>
+                        </div>
+                        <div class="quality-free-row">
+                            <span class="quality-free-label">自由输入</span>
+                            <input type="text" id="qualityFps" class="quality-input" placeholder="如 60">
+                        </div>
+                    </div>
+                </div>
+                <div class="quality-presets">
+                    <button class="quality-presets-header" type="button">
+                        <span class="quality-presets-label">音质</span>
+                        <span class="quality-presets-arrow"></span>
+                    </button>
+                    <div class="quality-presets-body">
+                        <div class="quality-presets-grid">
+                            <button class="quality-preset-btn" data-audio="128" type="button">128K</button>
+                            <button class="quality-preset-btn" data-audio="192" type="button">192K</button>
+                            <button class="quality-preset-btn" data-audio="256" type="button">256K</button>
+                            <button class="quality-preset-btn" data-audio="320" type="button">320K</button>
+                        </div>
+                        <div class="quality-free-row">
+                            <span class="quality-free-label">自由输入</span>
+                            <input type="text" id="qualityAudio" class="quality-input" placeholder="如 320">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="preset-actions">
+            <button class="action-btn confirm-btn" id="confirmBtn" title="确认">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </button>
+            <button class="action-btn cancel-btn" id="cancelPresetBtn" title="取消">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="decrypt-panel" id="decryptPanel">
+        <div class="decrypt-dropzone" id="decryptDropzone">
+            <svg class="decrypt-plus" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <div class="decrypt-hint">导入 NCM / KWM / XM / UC / MG3D 等加密音乐</div>
+            <div class="decrypt-sub">点击或拖拽文件到此处</div>
+            <div class="decrypt-count" id="decryptCount">已选择 0 个文件</div>
+        </div>
+        <div class="preset-actions">
+            <button class="action-btn confirm-btn" id="decryptConfirmBtn" title="开始解密">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </button>
+            <button class="action-btn cancel-btn" id="decryptCancelBtn" title="取消">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="selection-overlay" id="selectionOverlay"></div>
+    <div class="selection-dialog" id="selectionDialog"></div>
+
+    <div class="error-panel" id="errorPanel">
+        <div class="error-panel-header">
+            <h2>下载失败</h2>
+            <div class="error-panel-actions">
+                <button class="error-panel-refresh" id="refreshErrorsBtn" title="刷新">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 4v6h-6"></path>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                </button>
+                <button class="error-panel-clear" id="clearErrorsBtn" title="清空错误">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="error-panel-content">
+            <div class="error-list" id="errorList">
+                <!-- 错误项将通过JavaScript动态添加 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <div class="settings-modal-overlay" id="settingsModalOverlay"></div>
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-modal-content">
+            <div class="settings-header">
+                <h2>设置</h2>
+                <div class="settings-header-actions">
+                    <button class="import-export-btn" id="exportSettingsBtn" title="导出设置">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </button>
+                    <button class="import-export-btn" id="importSettingsBtn" title="导入设置">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-content">
+                <div class="setting-item">
+                    <label class="setting-label">保存位置<button class="help-btn" data-help="savePath" title="帮助">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                    </button></label>
+                    <div class="setting-input-group">
+                        <input type="text" id="savePath" class="setting-input" readonly>
+                        <button class="browse-btn" id="browsePathBtn">浏览</button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Cookie池<button class="help-btn" data-help="cookiePool" title="帮助">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                    </button></label>
+                    <div class="setting-input-group">
+                        <input type="text" id="cookiePoolPath" class="setting-input" readonly>
+                        <button class="browse-btn" id="browseCookiePoolBtn">选择文件夹</button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">Deno运行时<button class="help-btn" data-help="denoRuntimeEnabled" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="denoRuntimeEnabled" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">任务并行数<button class="help-btn" data-help="maxConcurrentTasks" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <div class="number-input-wrapper">
+                            <input type="number" id="maxConcurrentTasks" class="setting-input" min="1" value="3">
+                            <div class="number-controls">
+                                <button class="number-control-btn number-up" data-target="maxConcurrentTasks">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="18 15 12 9 6 15"></polyline>
+                                    </svg>
+                                </button>
+                                <button class="number-control-btn number-down" data-target="maxConcurrentTasks">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">并发数<button class="help-btn" data-help="concurrency" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <div class="number-input-wrapper">
+                            <input type="number" id="concurrency" class="setting-input" min="1" max="64" value="8">
+                            <div class="number-controls">
+                                <button class="number-control-btn number-up" data-target="concurrency">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="18 15 12 9 6 15"></polyline>
+                                    </svg>
+                                </button>
+                                <button class="number-control-btn number-down" data-target="concurrency">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">缓冲区<button class="help-btn" data-help="bufferSize" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <div class="number-input-wrapper">
+                            <input type="number" id="bufferSize" class="setting-input" min="0" value="1024">
+                            <div class="number-controls">
+                                <button class="number-control-btn number-up" data-target="bufferSize">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="18 15 12 9 6 15"></polyline>
+                                    </svg>
+                                </button>
+                                <button class="number-control-btn number-down" data-target="bufferSize">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">IPV4/IPV6<button class="help-btn" data-help="forceIpv4" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <button class="setting-trigger-btn" id="ipVersionTrigger" type="button">
+                            <span class="setting-trigger-value" id="ipVersionTriggerValue">默认</span>
+                            <svg class="trigger-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">进度冻结重试<button class="help-btn" data-help="progressFreezeRetry" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="progressFreezeRetryEnabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <label class="setting-label">冻结时间（秒）</label>
+                        <div class="number-input-wrapper">
+                            <input type="number" id="progressFreezeRetryValue" class="setting-input" min="10" max="3600" value="180">
+                            <div class="number-controls">
+                                <button class="number-control-btn number-up" data-target="progressFreezeRetryValue">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="18 15 12 9 6 15"></polyline>
+                                    </svg>
+                                </button>
+                                <button class="number-control-btn number-down" data-target="progressFreezeRetryValue">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">请求间隔（秒）<button class="help-btn" data-help="requestInterval" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <div class="number-input-wrapper">
+                            <input type="number" id="requestIntervalValue" class="setting-input" min="0" step="0.1" value="0.5">
+                            <div class="number-controls">
+                                <button class="number-control-btn number-up" data-target="requestIntervalValue" data-step="0.1">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="18 15 12 9 6 15"></polyline>
+                                    </svg>
+                                </button>
+                                <button class="number-control-btn number-down" data-target="requestIntervalValue" data-step="0.1">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">重试次数<button class="help-btn" data-help="retries" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <div class="number-input-wrapper">
+                            <input type="number" id="retries" class="setting-input" min="0" value="5">
+                            <div class="number-controls">
+                                <button class="number-control-btn number-up" data-target="retries">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="18 15 12 9 6 15"></polyline>
+                                    </svg>
+                                </button>
+                                <button class="number-control-btn number-down" data-target="retries">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">限速<button class="help-btn" data-help="rateLimit" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rateLimitEnabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <input type="text" id="rateLimitValue" class="setting-input" placeholder="例如: 50K, 1M">
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">代理<button class="help-btn" data-help="proxy" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="proxyEnabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <input type="text" id="proxyValue" class="setting-input" placeholder="例如: http://127.0.0.1:8080">
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">通知显示时长（秒）<button class="help-btn" data-help="notificationDuration" title="帮助">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                    </button></label>
+                    <div class="setting-input-group">
+                        <input type="number" id="notificationDuration" class="setting-input" min="1" max="10" value="3">
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">完成时系统通知<button class="help-btn" data-help="systemNotificationOnComplete" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="systemNotificationOnComplete" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">记住Cookie<button class="help-btn" data-help="rememberCookie" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rememberCookie" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">记住User-Agent<button class="help-btn" data-help="rememberUserAgent" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rememberUserAgent" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">关闭时行为<button class="help-btn" data-help="closeBehavior" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button>
+                        </label>
+                        <button class="setting-trigger-btn" id="closeBehaviorTrigger" type="button">
+                            <span class="setting-trigger-value" id="closeBehaviorTriggerValue">关闭FetchIT</span>
+                            <svg class="setting-trigger-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">关闭时同时打开输出位置<button class="help-btn" data-help="openOutputOnClose" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="openOutputOnClose">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">主题<button class="help-btn" data-help="theme" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <div class="theme-toggle">
+                            <button class="theme-btn" data-theme="dark" id="themeDarkBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                </svg>
+                                <span>深色</span>
+                            </button>
+                            <button class="theme-btn" data-theme="light" id="themeLightBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="5"></circle>
+                                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                </svg>
+                                <span>浅色</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">主题色<button class="help-btn" data-help="primaryColor" title="帮助">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                    </button></label>
+                    <div class="color-picker-container">
+                        <div class="preset-colors">
+                            <button class="color-option" data-color="#0078d4"></button>
+                            <button class="color-option" data-color="#e81123"></button>
+                            <button class="color-option" data-color="#107c10"></button>
+                            <button class="color-option" data-color="#d13438"></button>
+                            <button class="color-option" data-color="#8a2be2"></button>
+                        </div>
+                        <div class="custom-color-wrapper">
+                            <input type="color" id="customColorPicker" value="#0078d4">
+                            <span class="color-label">自定义</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">背景图<button class="help-btn" data-help="backgroundImage" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <button class="browse-btn" id="importBackgroundBtn">导入图片</button>
+                    </div>
+                    <div class="background-preview" id="backgroundPreview">
+                        <img id="backgroundPreviewImg" alt="背景预览">
+                        <button class="background-remove-btn" id="removeBackgroundBtn" title="移除背景图">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">模糊程度<button class="help-btn" data-help="backgroundBlur" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <div class="number-input-wrapper">
+                            <input type="number" id="backgroundBlur" class="setting-input" min="0" max="40" value="10">
+                            <div class="number-controls">
+                                <button class="number-control-btn number-up" data-target="backgroundBlur">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="18 15 12 9 6 15"></polyline>
+                                    </svg>
+                                </button>
+                                <button class="number-control-btn number-down" data-target="backgroundBlur">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="settings-shortcuts">
+                <div class="shortcut-hint">
+                    <kbd>Space</kbd>
+                    <span>新建</span>
+                </div>
+                <div class="shortcut-hint">
+                    <kbd>Esc</kbd>
+                    <span>取消</span>
+                </div>
+            </div>
+
+            </div>
+
+            <div class="settings-footer">
+                <button class="save-btn" id="saveSettingsBtn">保存</button>
+            </div>
+            <div class="setting-panel" id="ipVersionPanel">
+                <div class="setting-panel-header">
+                    <button class="selection-back-btn" id="ipVersionBackBtn" type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <span class="selection-panel-title">IP版本</span>
+                </div>
+                <div class="selection-list">
+                    <label class="codec-option">
+                        <input type="checkbox" value="default" data-label="默认" checked>
+                        <span class="codec-checkbox"></span>
+                        <span class="codec-name">默认</span>
+                    </label>
+                    <label class="codec-option">
+                        <input type="checkbox" value="ipv4" data-label="强制IPV4">
+                        <span class="codec-checkbox"></span>
+                        <span class="codec-name">强制IPV4</span>
+                    </label>
+                    <label class="codec-option">
+                        <input type="checkbox" value="ipv6" data-label="强制IPV6">
+                        <span class="codec-checkbox"></span>
+                        <span class="codec-name">强制IPV6</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="setting-panel" id="closeBehaviorPanel">
+            <div class="setting-panel-header">
+                <button class="selection-back-btn" id="closeBehaviorBackBtn" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <span class="selection-panel-title">关闭时行为</span>
+            </div>
+            <div class="selection-list">
+                <label class="codec-option">
+                    <input type="checkbox" value="minimize" data-label="最小化到系统托盘">
+                    <span class="codec-checkbox"></span>
+                    <span class="codec-name">最小化到系统托盘</span>
+                </label>
+                <label class="codec-option">
+                    <input type="checkbox" value="quit" data-label="关闭FetchIT" checked>
+                    <span class="codec-checkbox"></span>
+                    <span class="codec-name">关闭FetchIT</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="cookie-manager-overlay" id="cookieManagerOverlay"></div>
+    <div class="cookie-manager-modal" id="cookieManagerModal">
+        <div class="cookie-manager-content">
+            <div class="cookie-manager-header">
+                <h3>Cookie 管理</h3>
+                <div class="cookie-manager-header-actions">
+                    <button class="btn-secondary" id="addCookieBtn" type="button">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        <span>手动导入</span>
+                    </button>
+                    <button class="btn-primary" id="extractCookieBtn" type="button">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                        <span>登录站点</span>
+                    </button>
+                    <button class="cookie-manager-close" id="cookieManagerCloseBtn" type="button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="cookie-manager-body">
+                <div class="cookie-list-area" id="cookieListArea"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cookie-preview-modal-overlay" id="cookiePreviewModalOverlay"></div>
+    <div class="cookie-preview-modal" id="cookiePreviewModal">
+        <div class="cookie-preview-modal-content">
+            <div class="cookie-preview-modal-header">
+                <h3 id="cookiePreviewModalTitle">Cookie 预览<span id="cookiePreviewModalSuffix" class="cookie-preview-modal-suffix"></span></h3>
+                <button class="cookie-preview-modal-close" id="cookiePreviewModalClose" type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+                </button>
+            </div>
+            <div class="cookie-preview-modal-body">
+                <div class="cookie-preview-modal-content-wrap">
+                    <pre class="cookie-preview-modal-content-pre" id="cookiePreviewModalPre"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cookie-select-modal-overlay" id="cookieSelectModalOverlay"></div>
+    <div class="cookie-select-modal" id="cookieSelectModal">
+        <div class="cookie-select-modal-content">
+            <div class="cookie-select-modal-header">
+                <h3>选择 Cookie</h3>
+                <button class="cookie-select-modal-close" id="cookieSelectModalClose" type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+                </button>
+            </div>
+            <div class="cookie-select-modal-body">
+                <button class="cookie-select-none-btn" id="cookieSelectNoneBtn" type="button">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <span>不使用 Cookie</span>
+                </button>
+                <div class="selection-grid" id="cookieSelectionListArea"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cookie-method-overlay" id="cookieMethodOverlay"></div>
+    <div class="cookie-method-modal" id="cookieMethodModal">
+        <div class="cookie-method-content">
+            <div class="cookie-method-header">添加 Cookie</div>
+            <div class="cookie-method-body">
+                <button class="cookie-method-option" id="cookieMethodFileBtn" type="button">
+                    <span class="cookie-method-option-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </span>
+                    <span class="cookie-method-option-text">
+                        <span class="cookie-method-option-title">选择文件</span>
+                        <span class="cookie-method-option-desc">从本地 TXT 文件导入 Cookie</span>
+                    </span>
+                </button>
+                <button class="cookie-method-option" id="cookieMethodTextBtn" type="button">
+                    <span class="cookie-method-option-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </span>
+                    <span class="cookie-method-option-text">
+                        <span class="cookie-method-option-title">手动输入</span>
+                        <span class="cookie-method-option-desc">直接粘贴或输入 Cookie 内容</span>
+                    </span>
+                </button>
+            </div>
+            <div class="cookie-method-footer">
+                <button class="btn-secondary" id="cookieMethodCancelBtn" type="button">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cookie-name-overlay" id="cookieNameOverlay"></div>
+    <div class="cookie-name-modal" id="cookieNameModal">
+        <div class="cookie-name-content">
+            <div class="cookie-name-header" id="cookieNameHeader">为Cookie命名</div>
+            <div class="cookie-name-body">
+                <input type="text" id="cookieNameInput" class="cookie-name-input" placeholder="例如 bilibili_main" maxlength="64">
+                <div class="cookie-format-select">
+                    <span class="cookie-format-label">Cookie 格式</span>
+                    <div class="cookie-format-options">
+                        <button type="button" class="cookie-format-option" data-format="general">一般</button>
+                        <button type="button" class="cookie-format-option active" data-format="netscape">Netscape</button>
+                    </div>
+                </div>
+                <textarea id="cookieContentInput" class="cookie-content-input" placeholder="粘贴 Cookie 内容，每行一条或直接粘贴完整 Cookie 字符串" rows="8"></textarea>
+                <div class="cookie-name-error" id="cookieNameError"></div>
+            </div>
+            <div class="cookie-name-footer">
+                <button class="btn-secondary" id="cookieNameCancelBtn" type="button">取消</button>
+                <button class="btn-primary" id="cookieNameConfirmBtn" type="button">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cookie-extract-overlay" id="cookieExtractOverlay"></div>
+    <div class="cookie-extract-modal" id="cookieExtractModal">
+        <div class="cookie-name-content">
+            <div class="cookie-name-header">提取 Cookie</div>
+            <div class="cookie-name-body">
+                <input type="text" id="cookieExtractUrlInput" class="cookie-name-input" placeholder="例如 bilibili.com 或 https://www.bilibili.com">
+                <div class="cookie-name-error" id="cookieExtractError"></div>
+            </div>
+            <div class="cookie-name-footer">
+                <button class="btn-secondary" id="cookieExtractCancelBtn" type="button">取消</button>
+                <button class="btn-primary" id="cookieExtractConfirmBtn" type="button">登录</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cookie-rename-overlay" id="cookieRenameOverlay"></div>
+    <div class="cookie-rename-modal" id="cookieRenameModal">
+        <div class="cookie-name-content">
+            <div class="cookie-name-header">重命名 Cookie</div>
+            <div class="cookie-name-body">
+                <input type="text" id="cookieRenameInput" class="cookie-name-input" maxlength="64">
+                <div class="cookie-name-error" id="cookieRenameError"></div>
+            </div>
+            <div class="cookie-name-footer">
+                <button class="btn-secondary" id="cookieRenameCancelBtn" type="button">取消</button>
+                <button class="btn-primary" id="cookieRenameConfirmBtn" type="button">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="playlist-select-modal-overlay" id="playlistSelectModalOverlay"></div>
+    <div class="playlist-select-modal" id="playlistSelectModal">
+        <div class="playlist-select-content">
+            <div class="playlist-select-header">
+                <h3 id="playlistSelectTitle">选择要下载的集数</h3>
+                <button class="playlist-select-close" id="playlistSelectCloseBtn" type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+                </button>
+            </div>
+            <div class="playlist-select-toolbar">
+                <button class="playlist-select-btn" id="playlistSelectAllBtn" type="button">全选</button>
+                <button class="playlist-select-btn" id="playlistInvertBtn" type="button">反选</button>
+                <label class="playlist-index-toggle" title="下载时给文件名额外添加序号前缀">
+                    <span class="toggle-switch">
+                        <input type="checkbox" id="playlistIndexToggle">
+                        <span class="toggle-slider"></span>
+                    </span>
+                    <span>额外添加序号</span>
+                </label>
+                <span class="playlist-select-count" id="playlistSelectCount">已选 0 项</span>
+            </div>
+            <div class="playlist-select-search">
+                <input type="text" id="playlistSearchInput" class="playlist-search-input" placeholder="搜索标题...">
+            </div>
+            <div class="playlist-select-body" id="playlistSelectList"></div>
+            <div class="playlist-select-footer">
+                <button class="confirm-cancel-btn" id="playlistSelectCancelBtn" type="button">取消</button>
+                <button class="confirm-ok-btn" id="playlistSelectConfirmBtn" type="button">开始</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="help-modal" id="helpModal">
+        <div class="help-modal-content">
+            <div class="help-modal-header">
+                <h3 id="helpModalTitle">帮助</h3>
+                <button class="help-modal-close" id="helpModalClose">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+                </button>
+            </div>
+            <div class="help-modal-body" id="helpModalBody">
+            </div>
+        </div>
+    </div>
+
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-modal-content">
+            <div class="confirm-modal-header">
+                <h3 id="confirmModalTitle">确认</h3>
+            </div>
+            <div class="confirm-modal-body">
+                <p id="confirmModalMessage"></p>
+            </div>
+            <div class="confirm-modal-actions">
+                <button class="confirm-cancel-btn" id="confirmCancelBtn">取消</button>
+                <button class="confirm-ok-btn" id="confirmOkBtn">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-modal-overlay" id="aboutModalOverlay"></div>
+    <div class="about-modal" id="aboutModal">
+        <div class="about-modal-content">
+            <div class="about-modal-header">
+                <h3>关于</h3>
+                <button class="about-modal-close" id="aboutModalClose">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+                </button>
+            </div>
+            <div class="about-tabs">
+                <button class="about-tab active" data-tab="changelog" type="button">更新日志</button>
+                <button class="about-tab" data-tab="platforms" type="button">支持平台</button>
+                <button class="about-tab" data-tab="info" type="button">其他信息</button>
+            </div>
+            <div class="about-modal-body">
+                <div class="about-tab-content active" data-tab-content="changelog">
+                    <div class="changelog-list">
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.2.9</div>
+                            <div class="changelog-date">2026-09-28</div>
+                            <ul class="changelog-changes">
+                                <li>优化：列表解析增加了搜索过滤</li>
+                                <li>优化：粘贴按钮点击时不再清空原输入框含有的内容</li>
+                                <li>优化：将设置中的编码配置移动到了下载面板内，调整了相关逻辑</li>
+                                <li>优化：新增了音质的质量选择</li>
+                                <li>优化：修改了质量的处理逻辑， ≤预设值 -> ≈预设值，为有标称偏差的情况进行了特殊优化</li>
+                                <li>优化：改善了质量，编码选择的界面</li>
+                                <li>协议升级：GPL-2.0 -> GPL-3.0</li>
+                                <li>万分感谢 @Rouk 对本次更新 音质，列表解析等功能的贡献！</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.2.8</div>
+                            <div class="changelog-date">2026-09-23</div>
+                            <ul class="changelog-changes">
+                                <li>Bug修复：列表解析有时不会正确传入cookie的问题</li>
+                                <li>功能改进：调整了关于“质量”的配置</li>
+                                <li>优化：为了不被平台限速/风控，列表下载功能同一列表内的任务不再并发进行</li>
+                                <li>万分感谢 @Rouk 对于列表下载的改进：超快的解析速度和强大的预览</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.2.7</div>
+                            <div class="changelog-date">2026-09-19</div>
+                            <ul class="changelog-changes">
+                                <li>Bug修复：修复了“关于”界面第二、三栏内容消失的问题</li>
+                                <li>新功能：Cookie提取，现在可以在cookie管理界面内选择：登录站点来通过登录操作自动提取出cookie了</li>
+                                <li>功能改进：Cookie管理支持为cookie重命名</li>
+                                <li>功能改进：Cookiie预览支持框选，复制内容了</li>
+                                <li>功能改进：除了Netscape格式的cookie以外，现在额外支持导入一般形式的cookie</li>
+                                <li>功能改进：列表下载优化，升级了筛选功能，可以可视化手动筛选了。但目前b站筛选可能会遇到名称/封面不显示的问题</li>
+                                <li>功能改进：质量设置的配置进行了优化</li>
+                                <li>优化：APP启动时不再显示神秘的远古Windows7边框</li>
+                                <li>优化：部分UI进行了小型调整</li>
+                                <li>特别感谢 @Rouk 对本次列表解析，Cookie手动导入加工流程功能更新的重大贡献！</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.2.6</div>
+                            <div class="changelog-date">2026-09-13</div>
+                            <ul class="changelog-changes">
+                                <li>Bug修复：在系统内存或CPU占用较满时点击取消任务后台进程没有正确结束的问题</li>
+                                <li>功能改进：常规/列表模式下载面板内新增质量选项，可以更精细的配置，默认为最佳质量</li>
+                                <li>功能改进：有任务进行时也可以添加任务了，已将取消按钮被独立出来</li>
+                                <li>优化：提升了APP启动后第一次解析的加载速度</li>
+                                <li>优化：当未能获取平台视频封面等附加信息但成功抓取视频链接时，会将原链接作为标题显示并不影响下载进行</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.2.5</div>
+                            <div class="changelog-date">2026-09-06</div>
+                            <ul class="changelog-changes">
+                                <li>优化：解决部分组件打开时的卡顿问题</li>
+                                <li>优化：模糊效果优化</li>
+                                <li>优化：字体不再联网加载</li>
+                                <li>还有其他大大小小的一些细节改动</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.2.4</div>
+                            <div class="changelog-date">2026-08-31</div>
+                            <ul class="changelog-changes">
+                                <li>新增设置：导入背景图</li>
+                                <li>新特性：导入背景图后大多数UI将采用液态玻璃的样式，模糊程度可以配置</li>
+                                <li>音乐解密功能：特别感谢 @Rouk 的强力支持</li>
+                                <li>新增设置：关闭时行为</li>
+                                <li>新增设置：关闭时打开输出文件夹</li>
+                                <li>新增特性：现在窗口可以调整大小了</li>
+                                <li>Cookie功能更改：可以通过Cookie管理添加多个cookie，方便调用</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.2.2</div>
+                            <div class="changelog-date">2026-08-27</div>
+                            <ul class="changelog-changes">
+                                <li>新增设置：记住Cookie</li>
+                                <li>新增设置：记住User-Agent</li>
+                                <li>新增设置：关闭时行为</li>
+                                <li>新增设置：关闭时打开输出位置</li>
+                                <li>新增特性：APP运行时不再可重复创建无效的窗口</li>
+                                <li>新增输出格式转换支持：Flac</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.2.1</div>
+                            <div class="changelog-date">2026-08-25</div>
+                            <ul class="changelog-changes">
+                                <li>加入了“关于”，包含更新日志等内容</li>
+                                <li>UI界面更新</li>
+                                <li>新增设置：完成任务时显示系统通知</li>
+                                <li>现在当FetchIT最小化到任务栏时，完成任务后会有闪烁提示</li>
+                                <li>优化了状态检测</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.2.0</div>
+                            <div class="changelog-date">2026-08-13</div>
+                            <ul class="changelog-changes">
+                                <li>新增设置的导入与导出功能</li>
+                                <li>新增初始化设置功能：右击两次保存按钮以初始化</li>
+                                <li>优化任务卡片样式</li>
+                                <li>默认保存路径变更为设备的默认下载位置</li>
+                                <li>优化小红书，抖音平台的下载</li>
+                                <li>优化了Youtube下载播放列表时的一些神秘问题</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.1.9</div>
+                            <div class="changelog-date">2026-07-21</div>
+                            <ul class="changelog-changes">
+                                <li>优化了设置界面开关时的性能</li>
+                                <li>调整了一些异步操作</li>
+                                <li>修复分片数设置为0时app崩溃的bug</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.1.8</div>
+                            <div class="changelog-date">2026-07-04</div>
+                            <ul class="changelog-changes">
+                                <li>安装包体积减少了一丢丢</li>
+                                <li>优化了Youtube音乐下载</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.1.7</div>
+                            <div class="changelog-date">2026-06-26</div>
+                            <ul class="changelog-changes">
+                                <li>正式支持了抖音平台（国内）</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.1.6</div>
+                            <div class="changelog-date">2026-06-19</div>
+                            <ul class="changelog-changes">
+                                <li>这期拉了...于1.1.7正式支持抖音</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.1.5</div>
+                            <div class="changelog-date">2026-06-12</div>
+                            <ul class="changelog-changes">
+                                <li>解决了b站总是遇到412错误的问题</li>
+                                <li>下载面板变更：加入“原始”输出，调整了封面图与编码设置</li>
+                                <li>Electron版本降级至16.0.0以兼容windows8设备</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.1.4</div>
+                            <div class="changelog-date">2026-06-10</div>
+                            <ul class="changelog-changes">
+                                <li>临时应对了b站更新的风控机制</li>
+                                <li>555过生日还在修bug TvT</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.1.3</div>
+                            <div class="changelog-date">2026-05-26</div>
+                            <ul class="changelog-changes">
+                                <li>内置了Deno运行时，解决有时候Youtube解析失败的问题</li>
+                                <li>吃掉了1.1.2版本:)</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.1.1</div>
+                            <div class="changelog-date">2026-05-19</div>
+                            <ul class="changelog-changes">
+                                <li>下载面板的操作变更</li>
+                                <li>新增编码偏好设置</li>
+                                <li>User-Agent相关优化</li>
+                                <li>没错1.1.0被我吃了</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.0.9</div>
+                            <div class="changelog-date">2026-05-10</div>
+                            <ul class="changelog-changes">
+                                <li>新增设置：失败重试次数</li>
+                                <li>新增设置：缓冲区</li>
+                                <li>UI样式优化</li>
+                                <li>图标更改</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.0.N</div>
+                            <div class="changelog-date">我也不记得了...</div>
+                            <ul class="changelog-changes">
+                                <li>代理相关的优化</li>
+                                <li>新增IP版本的配置</li>
+                                <li>修复列表下载完后立刻去添加直链任务会导致直链任务一直卡在队列里排队的bug</li>
+                                <li>直链模式增加时长预计</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-tab-content" data-tab-content="platforms">
+                    <div class="platforms-grid">
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></div>
+                            <span class="platform-card-name">YouTube</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg></div>
+                            <span class="platform-card-name">TikTok</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.51A3.02 3.02 0 0 0 .5 6.2C0 8.08 0 12 0 12s0 3.92.5 5.8a3.02 3.02 0 0 0 2.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.02 3.02 0 0 0 2.12-2.14C24 15.92 24 12 24 12s0-3.92-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/></svg></div>
+                            <span class="platform-card-name">Bilibili</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.5 12.5l-8.5 5c-.3.2-.7-.1-.7-.5V6.5c0-.4.4-.7.7-.5l8.5 5c.3.2.3.7 0 .8z"/></svg></div>
+                            <span class="platform-card-name">Niconico</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg></div>
+                            <span class="platform-card-name">Instagram</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.7828 3.91825C20.1313 3.83565 20.3743 3.75444 20.5734 3.66915C20.8524 3.54961 21.0837 3.40641 21.4492 3.16524C21.7563 2.96255 22.1499 2.9449 22.4739 3.11928C22.7979 3.29366 23 3.6319 23 3.99986C23 5.08079 22.8653 5.96673 22.5535 6.7464C22.2911 7.40221 21.9225 7.93487 21.4816 8.41968C21.2954 11.7828 20.3219 14.4239 18.8336 16.4248C17.291 18.4987 15.2386 19.8268 13.0751 20.5706C10.9179 21.3121 8.63863 21.4778 6.5967 21.2267C4.56816 20.9773 2.69304 20.3057 1.38605 19.2892C1.02813 19.0108 0.902313 18.5264 1.07951 18.109C1.25671 17.6916 1.69256 17.4457 2.14144 17.5099C3.42741 17.6936 4.6653 17.4012 5.6832 16.9832C5.48282 16.8742 5.29389 16.7562 5.11828 16.6346C4.19075 15.9925 3.4424 15.1208 3.10557 14.4471C2.96618 14.1684 2.96474 13.8405 3.10168 13.5606C3.17232 13.4161 3.27562 13.293 3.40104 13.1991C2.04677 12.0814 1.49999 10.5355 1.49999 9.49986C1.49999 9.19192 1.64187 8.90115 1.88459 8.71165C1.98665 8.63197 2.10175 8.57392 2.22308 8.53896C2.12174 8.24222 2.0431 7.94241 1.98316 7.65216C1.71739 6.3653 1.74098 4.91284 2.02985 3.75733C2.1287 3.36191 2.45764 3.06606 2.86129 3.00952C3.26493 2.95299 3.6625 3.14709 3.86618 3.50014C4.94369 5.36782 6.93116 6.50943 8.78086 7.18568C9.6505 7.50362 10.4559 7.70622 11.0596 7.83078C11.1899 6.61019 11.5307 5.6036 12.0538 4.80411C12.7439 3.74932 13.7064 3.12525 14.74 2.84698C16.5227 2.36708 18.5008 2.91382 19.7828 3.91825ZM10.7484 9.80845C10.0633 9.67087 9.12171 9.43976 8.09412 9.06408C6.7369 8.56789 5.16088 7.79418 3.84072 6.59571C3.86435 6.81625 3.89789 7.03492 3.94183 7.24766C4.16308 8.31899 4.5742 8.91899 4.94721 9.10549C5.40342 9.3336 5.61484 9.8685 5.43787 10.3469C5.19827 10.9946 4.56809 11.0477 3.99551 10.9046C4.45603 11.595 5.28377 12.2834 6.66439 12.5135C7.14057 12.5929 7.49208 13.0011 7.49986 13.4838C7.50765 13.9665 7.16949 14.3858 6.69611 14.4805L5.82565 14.6546C5.95881 14.7703 6.103 14.8838 6.2567 14.9902C6.95362 15.4727 7.65336 15.6808 8.25746 15.5298C8.70991 15.4167 9.18047 15.6313 9.39163 16.0472C9.60278 16.463 9.49846 16.9696 9.14018 17.2681C8.49626 17.8041 7.74425 18.2342 6.99057 18.5911C6.63675 18.7587 6.24134 18.9241 5.8119 19.0697C6.14218 19.1402 6.48586 19.198 6.84078 19.2417C8.61136 19.4594 10.5821 19.3126 12.4249 18.6792C14.2614 18.0479 15.9589 16.9385 17.2289 15.2312C18.497 13.5262 19.382 11.1667 19.5007 7.96291C19.51 7.71067 19.6144 7.47129 19.7929 7.29281C20.2425 6.84316 20.6141 6.32777 20.7969 5.7143C20.477 5.81403 20.1168 5.90035 19.6878 5.98237C19.3623 6.04459 19.0272 5.94156 18.7929 5.70727C18.0284 4.94274 16.5164 4.43998 15.2599 4.77822C14.6686 4.93741 14.1311 5.28203 13.7274 5.89906C13.3153 6.52904 13 7.51045 13 8.9999C13 9.28288 12.8801 9.5526 12.6701 9.74221C12.1721 10.1917 11.334 9.92603 10.7484 9.80845Z"/></svg></div>
+                            <span class="platform-card-name">Twitter / X</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.676-.198-11.279-.198-14.23 0C2.441 3.389 2.127 5.378 2.106 9.5c.021 4.111.324 6.101 3.279 6.316 2.955.198 10.559.198 14.23 0 2.944-.205 3.259-2.194 3.279-6.316-.021-4.111-.324-6.101-3.279-6.316zM9.75 12.5v-6l5.25 3-5.25 3z"/></svg></div>
+                            <span class="platform-card-name">YouTube Music</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-3.5-7l3.5-2 3.5 2-1-4 3-3-4-.5-1.5-4-1.5 4-4 .5 3 3-1 4z"/></svg></div>
+                            <span class="platform-card-name">SoundCloud</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M9.745 9.18a3.09 3.09 0 0 0-1.7.51V6.56a3.09 3.09 0 1 0-6.18 0v10.36a3.09 3.09 0 0 0 6.18 0v-4.04c0-.79.64-1.43 1.7-1.43s1.7.64 1.7 1.43v4.04a3.09 3.09 0 0 0 6.18 0V9.18h-7.88z"/></svg></div>
+                            <span class="platform-card-name">Vimeo</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.47 31.47 0 0 0-.522 5.785 31.47 31.47 0 0 0 .522 5.785 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.47 31.47 0 0 0 .522-5.785 31.47 31.47 0 0 0-.522-5.785zM9.609 15.601V8.398l6.264 3.601z"/></svg></div>
+                            <span class="platform-card-name">Twitch</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12s4.477 10 10 10 10-4.477 10-10zm-9.5 4.5L8 12l4.5-4.5L15 12l-2.5 4.5z"/></svg></div>
+                            <span class="platform-card-name">Dailymotion</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 94 94" fill="currentColor"><path d="M89,0H5C2.238,0,0,2.238,0,5v84c0,2.762,2.238,5,5,5h84c2.762,0,5-2.238,5-5V5C94,2.238,91.762,0,89,0z M13.014,59.497c-2.049-0.802-1.497-2.668-1.191-3.343l2.296-5.02L8.27,37.748c-0.116-0.4-0.795-2.527,1.282-3.224c1.914-0.64,2.938,0.238,3.55,1.494l3.729,9.303l3.909-9.269c0.483-1.146,1.273-2.357,3.582-1.543c2.387,0.842,1.279,3.219,1.279,3.219l-8.926,20.024C16.006,59.123,15.066,60.295,13.014,59.497z M32.396,51.924c-5.031,0-8.164-3.588-8.164-8.01s3.656-8.007,8.164-8.007s8.162,3.585,8.162,8.007S37.809,51.924,32.396,51.924z M55.65,46.073c-0.199,3.786-3.148,6.028-7.354,6.084c-7.476,0.104-7.335-4.677-7.364-5.606l0.009-7.405c0.096-1.511,0.862-2.343,2.308-2.45c1.351,0.061,2.033,0.809,2.093,2.3l-0.007,7.454c-0.002,0.667,0.353,2.54,2.975,2.475c1.769-0.047,2.83-1.133,2.906-2.715l0.002-7.432c0.096-1.512,0.807-2.329,2.202-2.419c1.44,0.029,2.181,0.762,2.247,2.259L55.65,46.073z M70.641,51.111c-0.8,0.77-2.406,0.854-3.385,0.051c-0.33-0.283-6.408-5.424-6.408-5.424l-0.006,4.209c-0.061,1.262-0.822,1.957-2.346,1.951c-1.459,0-2.254-0.643-2.335-1.959V38.629c0.081-1.373,0.735-2.169,2.329-2.169c1.547,0,2.295,0.845,2.33,2.171l0.033,3.944l5.762-5.445c0.576-0.531,2.179-1.22,3.436-0.02c1.711,1.628-0.242,3.483-0.242,3.483l-3.947,3.439l4.406,3.737C71.286,48.635,71.484,50.299,70.641,51.111z M85.93,46.24c-0.207,3.748-2.607,5.701-7.393,5.775c-4.758-0.074-7.202-2.035-7.362-5.767v-7.42c0.08-1.494,0.776-2.36,2.292-2.36c1.371,0.049,2.061,0.859,2.137,2.354l0.014,7.417c0.083,1.564,1.236,2.589,2.934,2.589c1.612,0,2.848-1.021,2.928-2.589v-7.417c0.056-1.494,0.816-2.298,2.211-2.349c1.398,0.051,2.16,0.854,2.24,2.349V46.24L85.93,46.24z"/><ellipse cx="32.396" cy="44.044" rx="3.641" ry="4.268"/></svg></div>
+                            <span class="platform-card-name">优酷</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M10.421 11.375c-.294 1.028.012 2.064.784 2.653 1.061.81 2.565.3 2.874-.995.08-.337.103-.722.027-1.056-.23-1.001-.52-1.988-.792-2.996-1.33.154-2.543 1.172-2.893 2.394zm5.548-.287c.273 1.012.285 2.017-.127 3-1.128 2.69-4.721 3.14-6.573.826-1.302-1.627-1.28-3.961.06-5.734.78-1.032 1.804-1.707 3.048-2.054l.379-.104c-.084-.415-.188-.816-.243-1.224-.176-1.317.512-2.503 1.744-3.04 1.226-.535 2.708-.216 3.53.76.406.479.395 1.08-.025 1.464-.412.377-.996.346-1.435-.09-.247-.246-.51-.44-.877-.436-.525.006-.987.418-.945.937.037.468.173.93.3 1.386.022.078.216.135.338.153 1.334.197 2.504.731 3.472 1.676 2.558 2.493 2.861 6.531.672 9.44-1.529 2.032-3.61 3.168-6.127 3.409-4.621.44-8.664-2.53-9.7-7.058C2.515 10.255 4.84 5.831 8.795 4.25c.586-.234 1.143-.031 1.371.498.232.537-.019 1.086-.61 1.35-2.368 1.06-3.817 2.855-4.215 5.424-.533 3.433 1.656 6.776 5 7.72 2.723.77 5.658-.166 7.308-2.33 1.586-2.08 1.4-5.099-.427-6.873a3.979 3.979 0 0 0-1.823-1.013c.198.716.389 1.388.57 2.062z"/></svg></div>
+                            <span class="platform-card-name">网易云音乐</span>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M20 1C21.6569 1 23 2.34315 23 4V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H20ZM20 3C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H15V13.9999H17.0762C17.5066 13.9999 17.8887 13.7245 18.0249 13.3161L18.4679 11.9871C18.6298 11.5014 18.2683 10.9999 17.7564 10.9999H15V8.99992C15 8.49992 15.5 7.99992 16 7.99992H18C18.5523 7.99992 19 7.5522 19 6.99992V6.31393C19 5.99091 18.7937 5.7013 18.4813 5.61887C17.1705 5.27295 16 5.27295 16 5.27295C13.5 5.27295 12 6.99992 12 8.49992V10.9999H10C9.44772 10.9999 9 11.4476 9 11.9999V12.9999C9 13.5522 9.44771 13.9999 10 13.9999H12V21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3H20Z"/></svg></div>
+                            <span class="platform-card-name">Facebook</span>
+                        </div>
+                        <div class="platform-card platform-card-more">
+                            <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></div>
+                            <span class="platform-card-name">远不止这些！</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-tab-content" data-tab-content="info">
+                    <div class="about-content">
+                        <div class="about-item">
+                            <span class="about-label">版本</span>
+                            <span class="about-value">1.2.9</span>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">协议</span>
+                            <span class="about-value">GPL-3.0-only</span>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">特别鸣谢</span>
+                            <span class="about-value">Rouk</span>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">作者</span>
+                            <span class="about-value">Windment</span>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">QQ</span>
+                            <span class="about-value">3341602838</span>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">QQ群</span>
+                            <span class="about-value">1031582421</span>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">邮箱</span>
+                            <span class="about-value">windment@outlook.com</span>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">作者简介</span>
+                            <span class="about-value">由🍕 🍫 🍬 🍜 🍚 🍎强力驱动</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/window.js"></script>
+    <script src="js/cookie-parse.js"></script>
+    <script src="js/cookies.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/decrypt.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>
