@@ -2,6 +2,7 @@ const { ipcMain, dialog, BrowserWindow, session } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const log = require('./logger');
 const ctx = require('./context');
 
 const INVALID_NAME_RE = /[\\/:*?"<>|]/;
@@ -155,9 +156,11 @@ ipcMain.on('add-cookie-text', (event, payload) => {
     }
     fs.writeFile(target, content, 'utf8', (err) => {
         if (err) {
+            log.error('cookies', `Cookie「${name}」写入 Cookie 池失败：`, err);
             event.reply('add-cookie-file-result', { error: 'copy-failed' });
             return;
         }
+        log.info('cookies', `Cookie「${name}」已保存到 Cookie 池（内容 ${Buffer.byteLength(content, 'utf8')} 字节）`);
         event.reply('add-cookie-file-result', { ok: true, name });
         if (ctx.mainWindow) ctx.mainWindow.webContents.send('cookies-list-changed');
     });
@@ -181,7 +184,12 @@ ipcMain.on('delete-cookie-file', (event, nameInput) => {
     }
     const deletedPath = path.resolve(target);
     fs.unlink(target, (err) => {
-        if (err) { event.reply('delete-cookie-file-result', { error: 'failed' }); return; }
+        if (err) {
+            log.error('cookies', `Cookie「${nameInput}」删除失败：`, err);
+            event.reply('delete-cookie-file-result', { error: 'failed' });
+            return;
+        }
+        log.info('cookies', `Cookie「${nameInput}」已从 Cookie 池删除`);
         event.reply('delete-cookie-file-result', { ok: true, deletedPath });
         if (ctx.mainWindow) ctx.mainWindow.webContents.send('cookies-list-changed');
     });
@@ -328,9 +336,11 @@ function generateExtractCookieName(hostname) {
 ipcMain.on('start-cookie-extract', (event, url) => {
     const parsed = normalizeSiteUrl(url);
     if (!parsed) {
+        log.warn('cookies', `Cookie 提取被拒绝：无效站点地址「${url}」`);
         event.reply('cookie-extract-error', '无效的站点地址，请输入完整域名');
         return;
     }
+    log.info('cookies', `打开登录站点提取 Cookie：${parsed.hostname}`);
     const partition = 'cookie-extract-' + crypto.randomBytes(6).toString('hex');
     const win = new BrowserWindow({
         width: 1100,
@@ -369,22 +379,26 @@ ipcMain.on('cookie-extract-finish', (event) => {
     const ses = session.fromPartition(info.partition);
     ses.cookies.get({}).then((cookies) => {
         if (!cookies || !cookies.length) {
+            log.warn('cookies', `站点 ${info.hostname} 未检测到任何 Cookie`);
             event.sender.send('cookie-extract-result', { error: 'no-cookies' });
             return;
         }
         const content = buildNetscapeCookieFile(cookies);
         const name = generateExtractCookieName(info.hostname);
+        log.info('cookies', `站点 ${info.hostname} 提取到 ${cookies.length} 条 Cookie，转换为 Netscape 格式保存为「${name}」`);
         ctx.ensureDirectoryExists(ctx.settings.cookiePool);
         const target = path.join(ctx.settings.cookiePool, name + '.txt');
         fs.writeFile(target, content, 'utf8', (err) => {
             if (err) {
+                log.error('cookies', `Cookie「${name}」写入失败：`, err);
                 event.sender.send('cookie-extract-result', { error: 'write-failed' });
                 return;
             }
             event.sender.send('cookie-extract-result', { ok: true, name });
             if (ctx.mainWindow) ctx.mainWindow.webContents.send('cookies-list-changed');
         });
-    }).catch(() => {
+    }).catch((err) => {
+        log.error('cookies', `站点 ${info.hostname} Cookie 读取失败：`, err);
         event.sender.send('cookie-extract-result', { error: 'read-failed' });
     });
 });

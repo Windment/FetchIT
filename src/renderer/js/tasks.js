@@ -1,5 +1,3 @@
-const { clipboard } = require('electron');
-
 let errorCount = 0;
 let errorList = [];
 
@@ -20,6 +18,7 @@ const queueNumber = document.getElementById('queueNumber');
 const errorNumber = document.getElementById('errorNumber');
 const errorPanel = document.getElementById('errorPanel');
 const errorListContainer = document.getElementById('errorList');
+const errorPanelOverlay = document.getElementById('errorPanelOverlay');
 const presetOptions = document.querySelector('.preset-options');
 const playlistItemsContainer = document.getElementById('playlistItemsContainer');
 const formatTrigger = document.getElementById('formatTrigger');
@@ -505,7 +504,7 @@ normalModeBtn.addEventListener('click', () => {
     directModeBtn.classList.remove('active');
     decryptModeBtn.classList.remove('active');
     urlInput.placeholder = '输入链接，一行一个';
-    errorPanel.classList.remove('show');
+    closeErrorPanel();
 });
 
 listModeBtn.addEventListener('click', () => {
@@ -515,7 +514,7 @@ listModeBtn.addEventListener('click', () => {
     directModeBtn.classList.remove('active');
     decryptModeBtn.classList.remove('active');
     urlInput.placeholder = '输入播放列表链接';
-    errorPanel.classList.remove('show');
+    closeErrorPanel();
 });
 
 directModeBtn.addEventListener('click', () => {
@@ -525,7 +524,7 @@ directModeBtn.addEventListener('click', () => {
     listModeBtn.classList.remove('active');
     decryptModeBtn.classList.remove('active');
     urlInput.placeholder = '输入直链下载链接，一行一个';
-    errorPanel.classList.remove('show');
+    closeErrorPanel();
 });
 
 addBtn.addEventListener('click', () => {
@@ -542,8 +541,16 @@ cancelAllBtn.addEventListener('click', () => {
 
 pasteBtn.addEventListener('click', async () => {
     try {
-        const text = await clipboard.readText();
-        const links = extractLinks(text);
+        const text = await ipcRenderer.invoke('read-clipboard-text');
+        if (!text || !String(text).trim()) {
+            showNotification('剪贴板为空，没有可粘贴的内容', 'error');
+            return;
+        }
+        const links = extractLinks(String(text));
+        if (links.length === 0) {
+            showNotification('剪贴板中没有检测到有效链接', 'error');
+            return;
+        }
         const newContent = links.join('\n');
         const existing = urlInput.value;
         if (existing.trim()) {
@@ -552,6 +559,7 @@ pasteBtn.addEventListener('click', async () => {
             urlInput.value = newContent;
         }
     } catch (err) {
+        showNotification('读取剪贴板失败，请检查权限', 'error');
     }
 });
 
@@ -713,6 +721,59 @@ function hidePresetCard() {
     document.getElementById('errorCount').classList.remove('disabled');
 }
 
+function formatMB(value) {
+    const v = Number(value) || 0;
+    if (v <= 0) return '0 MB';
+    if (v >= 100) return Math.round(v) + ' MB';
+    if (v >= 10) return v.toFixed(1) + ' MB';
+    return v.toFixed(2) + ' MB';
+}
+
+function formatSpeed(value) {
+    const v = Number(value) || 0;
+    if (v <= 0) return '-- MB/s';
+    if (v >= 100) return Math.round(v) + ' MB/s';
+    if (v >= 10) return v.toFixed(1) + ' MB/s';
+    return v.toFixed(2) + ' MB/s';
+}
+
+const ICON_PAUSE = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="9" y1="5" x2="9" y2="19"></line><line x1="15" y1="5" x2="15" y2="19"></line></svg>';
+const ICON_RESUME = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="7 4 20 12 7 20 7 4"></polygon></svg>';
+const ICON_DELETE = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
+function createTaskActionButton(kind, taskId) {
+    const isPause = kind !== 'delete';
+    const btn = document.createElement('button');
+    btn.className = 'task-action-btn ' + (isPause ? 'task-action-pause' : 'task-action-delete');
+    btn.type = 'button';
+    if (isPause) {
+        btn.dataset.state = kind;
+        btn.innerHTML = kind === 'pause' ? ICON_PAUSE : ICON_RESUME;
+        btn.title = kind === 'pause' ? '暂停' : '继续';
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const paused = btn.dataset.state === 'resume';
+            ipcRenderer.send(paused ? 'resume-task' : 'pause-task', taskId);
+        });
+    } else {
+        btn.innerHTML = ICON_DELETE;
+        btn.title = '删除任务';
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeTask(taskId);
+        });
+    }
+    return btn;
+}
+
+function createTaskActions(taskId) {
+    const wrap = document.createElement('div');
+    wrap.className = 'task-actions';
+    wrap.appendChild(createTaskActionButton('pause', taskId));
+    wrap.appendChild(createTaskActionButton('delete', taskId));
+    return wrap;
+}
+
 function createTaskCard(task) {
     const card = document.createElement('div');
     card.className = 'task-card';
@@ -736,14 +797,6 @@ function createTaskCard(task) {
         card.appendChild(coverDiv);
     }
 
-    const progressBg = document.createElement('div');
-    progressBg.className = 'task-progress-bg';
-    progressBg.style.width = '0%';
-
-    const progressBar = document.createElement('div');
-    progressBar.className = 'task-progress-bar';
-    progressBar.style.width = '0%';
-
     const infoDiv = document.createElement('div');
     infoDiv.className = 'task-info';
 
@@ -757,33 +810,37 @@ function createTaskCard(task) {
         authorDiv.className = 'task-author';
         authorDiv.textContent = task.author || '';
         infoDiv.appendChild(authorDiv);
-
-        const durationDiv = document.createElement('div');
-        durationDiv.className = 'task-duration';
-        durationDiv.textContent = task.duration || '';
-        infoDiv.appendChild(durationDiv);
     }
 
-    const sizeDiv = document.createElement('div');
-    sizeDiv.className = 'task-size';
-    sizeDiv.textContent = '';
-    infoDiv.appendChild(sizeDiv);
+    const statsRow = document.createElement('div');
+    statsRow.className = 'task-stats-row';
 
-    const metaDiv = document.createElement('div');
-    metaDiv.className = 'task-meta';
     const statusDiv = document.createElement('span');
     statusDiv.className = 'task-status task-status-queued';
     statusDiv.innerHTML = '<span class="task-status-dot"></span><span class="task-status-text">等待中</span>';
-    metaDiv.appendChild(statusDiv);
+    statsRow.appendChild(statusDiv);
 
     const progressText = document.createElement('span');
     progressText.className = 'task-progress-text';
     progressText.textContent = '';
-    metaDiv.appendChild(progressText);
+    statsRow.appendChild(progressText);
+
+    const sizeDiv = document.createElement('span');
+    sizeDiv.className = 'task-size';
+    sizeDiv.textContent = '';
+    statsRow.appendChild(sizeDiv);
+
+    const speedDiv = document.createElement('span');
+    speedDiv.className = 'task-speed';
+    speedDiv.textContent = '';
+    statsRow.appendChild(speedDiv);
+
+    infoDiv.appendChild(statsRow);
 
     if (task.type === 'direct') {
         const etaDiv = document.createElement('div');
         etaDiv.className = 'task-eta';
+        etaDiv.style.display = 'none';
         etaDiv.innerHTML = `
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M5 3h14"></path>
@@ -793,21 +850,16 @@ function createTaskCard(task) {
             </svg>
             <span></span>
         `;
-        metaDiv.appendChild(etaDiv);
+        statsRow.appendChild(etaDiv);
     }
 
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'task-close';
-    closeBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
-    closeBtn.addEventListener('click', () => {
-        removeTask(task.id);
-    });
+    const progressBg = document.createElement('div');
+    progressBg.className = 'task-progress-bg';
+    progressBg.style.width = '0%';
 
     card.appendChild(progressBg);
-    card.appendChild(progressBar);
     card.appendChild(infoDiv);
-    card.appendChild(metaDiv);
-    card.appendChild(closeBtn);
+    card.appendChild(createTaskActions(task.id));
 
     return card;
 }
@@ -823,10 +875,6 @@ function createListTaskCard(task) {
     progressBg.className = 'task-progress-bg';
     progressBg.style.width = '0%';
 
-    const progressBar = document.createElement('div');
-    progressBar.className = 'task-progress-bar';
-    progressBar.style.width = '0%';
-
     const body = document.createElement('div');
     body.className = 'list-task-body';
 
@@ -837,23 +885,45 @@ function createListTaskCard(task) {
     coverDiv.appendChild(coverImg);
     body.appendChild(coverDiv);
 
+    const mainCol = document.createElement('div');
+    mainCol.className = 'list-task-main';
+
     const infoDiv = document.createElement('div');
     infoDiv.className = 'list-task-info';
     infoDiv.textContent = task.title || (task.listSelectMode === 'manual' ? '解析列表中...' : 'Loading...');
     infoDiv.dataset.totalVideos = task.totalVideos || '';
-    body.appendChild(infoDiv);
+    mainCol.appendChild(infoDiv);
 
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'task-close';
-    closeBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
-    closeBtn.addEventListener('click', () => {
-        removeTask(task.id);
-    });
+    const statsRow = document.createElement('div');
+    statsRow.className = 'task-stats-row';
+
+    const statusDiv = document.createElement('span');
+    statusDiv.className = 'task-status task-status-queued';
+    statusDiv.innerHTML = '<span class="task-status-dot"></span><span class="task-status-text">等待中</span>';
+    statsRow.appendChild(statusDiv);
+
+    const progressText = document.createElement('span');
+    progressText.className = 'task-progress-text';
+    progressText.textContent = '';
+    statsRow.appendChild(progressText);
+
+    const sizeDiv = document.createElement('span');
+    sizeDiv.className = 'task-size';
+    sizeDiv.textContent = '';
+    statsRow.appendChild(sizeDiv);
+
+    const speedDiv = document.createElement('span');
+    speedDiv.className = 'task-speed';
+    speedDiv.textContent = '';
+    statsRow.appendChild(speedDiv);
+
+    mainCol.appendChild(statsRow);
+    body.appendChild(mainCol);
 
     card.appendChild(progressBg);
-    card.appendChild(progressBar);
     card.appendChild(body);
-    card.appendChild(closeBtn);
+    const actions = createTaskActions(task.id);
+    card.appendChild(actions);
 
     if (task.cover) {
         setListTaskCover(card, task.cover);
@@ -861,8 +931,10 @@ function createListTaskCard(task) {
 
     if (task.listSelectMode === 'manual') {
         card.classList.add('is-selectable');
+        const pauseBtn = actions.querySelector('.task-action-pause');
+        if (pauseBtn) pauseBtn.style.display = 'none';
         card.addEventListener('click', (e) => {
-            if (e.target.closest('.task-close')) return;
+            if (e.target.closest('.task-actions')) return;
             if (card.classList.contains('is-filtering')) return;
             openPlaylistSelect(task.id);
         });
@@ -896,6 +968,10 @@ function addTaskCard(task) {
 
 function removeTask(taskId) {
     ipcRenderer.send('remove-task', taskId);
+    const card = tasksContainer.querySelector(`[data-task-id="${taskId}"]`);
+    if (card && card.dataset.completed === '1') {
+        removeTaskCard(taskId);
+    }
 }
 
 function removeTaskCard(taskId) {
@@ -912,49 +988,74 @@ function removeTaskCard(taskId) {
     }
 }
 
-function updateTaskProgress(taskId, progress, downloaded, total) {
+function setTaskStatus(card, status) {
+    const statusDiv = card.querySelector('.task-status');
+    if (!statusDiv) return;
+    card.dataset.taskState = status;
+    const map = {
+        downloading: ['task-status-downloading', '下载中'],
+        merging: ['task-status-merging', '处理中'],
+        queued: ['task-status-queued', '等待中'],
+        paused: ['task-status-paused', '已暂停'],
+        completed: ['task-status-completed', '已完成'],
+        filtering: ['task-status-queued', '筛选中']
+    };
+    const entry = map[status] || map.queued;
+    statusDiv.className = 'task-status ' + entry[0];
+    statusDiv.innerHTML = '<span class="task-status-dot"></span><span class="task-status-text">' + entry[1] + '</span>';
+
+    const pauseBtn = card.querySelector('.task-action-pause');
+    if (pauseBtn) {
+        if (status === 'downloading' || status === 'paused') {
+            pauseBtn.style.display = '';
+        }
+        if (status === 'paused') {
+            pauseBtn.dataset.state = 'resume';
+            pauseBtn.innerHTML = ICON_RESUME;
+            pauseBtn.title = '继续';
+        } else {
+            pauseBtn.dataset.state = 'pause';
+            pauseBtn.innerHTML = ICON_PAUSE;
+            pauseBtn.title = '暂停';
+        }
+    }
+}
+
+function updateTaskProgress(taskId, progress, data) {
     const card = tasksContainer.querySelector(`[data-task-id="${taskId}"]`);
-    if (card) {
-        const progressBg = card.querySelector('.task-progress-bg');
-        if (progressBg) {
-            progressBg.style.width = progress + '%';
-        }
+    if (!card) return;
+    data = data || {};
 
-        const progressBar = card.querySelector('.task-progress-bar');
-        if (progressBar) {
-            progressBar.style.width = progress + '%';
-        }
+    const progressBg = card.querySelector('.task-progress-bg');
+    if (progressBg) {
+        progressBg.style.width = progress + '%';
+    }
 
-        const progressText = card.querySelector('.task-progress-text');
-        if (progressText) {
-            progressText.textContent = progress > 0 ? Math.round(progress) + '%' : '';
-        }
+    const progressText = card.querySelector('.task-progress-text');
+    if (progressText) {
+        progressText.textContent = progress > 0 ? Math.round(progress) + '%' : '';
+    }
 
-        const statusDiv = card.querySelector('.task-status');
-        if (statusDiv && progress > 0) {
-            statusDiv.className = 'task-status task-status-downloading';
-            statusDiv.innerHTML = '<span class="task-status-dot"></span><span class="task-status-text">下载中</span>';
-        }
+    const sizeDiv = card.querySelector('.task-size');
+    if (sizeDiv && (data.totalMB || data.downloadedMB)) {
+        sizeDiv.textContent = formatMB(data.downloadedMB) + ' / ' + formatMB(data.totalMB);
+    }
 
-        const sizeDiv = card.querySelector('.task-size');
-        if (sizeDiv && downloaded && total) {
-            sizeDiv.textContent = `${downloaded} / ${total}`;
-        }
+    const speedDiv = card.querySelector('.task-speed');
+    if (speedDiv) {
+        speedDiv.textContent = data.speedMBs > 0 ? '↓ ' + formatSpeed(data.speedMBs) : '';
+    }
 
-        if (progress > 0) {
-            if (card.classList.contains('list-task-card')) {
-                const infoDiv = card.querySelector('.list-task-info');
-                if (infoDiv && (!infoDiv.textContent || infoDiv.textContent === 'Loading...')) {
-                    infoDiv.textContent = card.dataset.url || '下载中';
-                }
-            } else {
-                const titleDiv = card.querySelector('.task-title');
-                if (titleDiv && (!titleDiv.textContent || titleDiv.textContent === 'Loading...')) {
-                    titleDiv.textContent = card.dataset.url || '下载中';
-                    const coverDiv = card.querySelector('.task-cover');
-                    if (coverDiv && !coverDiv.classList.contains('show')) {
-                        coverDiv.classList.add('temp');
-                    }
+    if (card.dataset.taskState !== 'paused' && card.dataset.taskState !== 'completed') {
+        setTaskStatus(card, progress >= 100 ? 'merging' : 'downloading');
+
+        if (progress > 0 && !card.classList.contains('list-task-card')) {
+            const titleDiv = card.querySelector('.task-title');
+            if (titleDiv && (!titleDiv.textContent || titleDiv.textContent === 'Loading...')) {
+                titleDiv.textContent = card.dataset.url || '下载中';
+                const coverDiv = card.querySelector('.task-cover');
+                if (coverDiv && !coverDiv.classList.contains('show')) {
+                    coverDiv.classList.add('temp');
                 }
             }
         }
@@ -970,29 +1071,51 @@ function updateTaskEta(taskId, eta) {
             if (span) {
                 span.textContent = eta;
             }
+            if (eta) {
+                etaDiv.style.display = '';
+            }
         }
     }
 }
 
-function updateListTaskProgress(taskId, downloaded, total) {
+function updateListTaskProgress(taskId, data) {
     const card = tasksContainer.querySelector(`[data-task-id="${taskId}"]`);
-    if (card) {
-        const infoDiv = card.querySelector('.list-task-info');
-        if (infoDiv) {
-            const title = infoDiv.textContent.split('：')[0];
-            infoDiv.textContent = `${title}：已下载 ${downloaded}/${total} 集`;
-        }
+    if (!card) return;
+    data = data || {};
+    const downloaded = data.downloaded || 0;
+    const total = data.total || 0;
+    const progress = typeof data.progress === 'number'
+        ? Math.max(0, Math.min(100, data.progress))
+        : (total > 0 ? (downloaded / total) * 100 : 0);
 
-        const progress = total > 0 ? (downloaded / total) * 100 : 0;
-        const progressBg = card.querySelector('.task-progress-bg');
-        if (progressBg) {
-            progressBg.style.width = progress + '%';
-        }
+    const infoDiv = card.querySelector('.list-task-info');
+    if (infoDiv) {
+        const title = infoDiv.textContent.split('：')[0];
+        infoDiv.textContent = `${title}：已下载 ${downloaded}/${total} 集`;
+    }
 
-        const progressBar = card.querySelector('.task-progress-bar');
-        if (progressBar) {
-            progressBar.style.width = progress + '%';
-        }
+    const progressBg = card.querySelector('.task-progress-bg');
+    if (progressBg) {
+        progressBg.style.width = progress + '%';
+    }
+
+    const progressText = card.querySelector('.task-progress-text');
+    if (progressText) {
+        progressText.textContent = progress > 0 ? Math.round(progress) + '%' : '';
+    }
+
+    const sizeDiv = card.querySelector('.task-size');
+    if (sizeDiv && (data.totalMB || data.downloadedMB)) {
+        sizeDiv.textContent = formatMB(data.downloadedMB) + ' / ' + formatMB(data.totalMB);
+    }
+
+    const speedDiv = card.querySelector('.task-speed');
+    if (speedDiv) {
+        speedDiv.textContent = data.speedMBs > 0 ? '↓ ' + formatSpeed(data.speedMBs) : '';
+    }
+
+    if (card.dataset.taskState !== 'paused' && card.dataset.taskState !== 'completed') {
+        setTaskStatus(card, progress >= 100 ? 'merging' : 'downloading');
     }
 }
 
@@ -1138,14 +1261,25 @@ function clearErrors() {
     renderErrorList();
 }
 
-document.getElementById('errorCount').addEventListener('click', () => {
+document.getElementById('errorCount').addEventListener('click', (e) => {
+    e.stopPropagation();
     if (errorPanel.classList.contains('show')) {
-        errorPanel.classList.remove('show');
+        closeErrorPanel();
     } else {
         errorPanel.classList.add('show');
+        if (errorPanelOverlay) errorPanelOverlay.classList.add('show');
         renderErrorList();
     }
 });
+
+function closeErrorPanel() {
+    errorPanel.classList.remove('show');
+    if (errorPanelOverlay) errorPanelOverlay.classList.remove('show');
+}
+
+if (errorPanelOverlay) {
+    errorPanelOverlay.addEventListener('click', closeErrorPanel);
+}
 
 document.getElementById('clearErrorsBtn').addEventListener('click', clearErrors);
 document.getElementById('refreshErrorsBtn').addEventListener('click', renderErrorList);
@@ -1159,7 +1293,7 @@ ipcRenderer.on('task-removed', (event, taskId) => {
 });
 
 ipcRenderer.on('task-progress', (event, data) => {
-    updateTaskProgress(data.id, data.progress, data.downloaded, data.total);
+    updateTaskProgress(data.id, data.progress, data);
 });
 
 ipcRenderer.on('task-eta', (event, data) => {
@@ -1167,14 +1301,39 @@ ipcRenderer.on('task-eta', (event, data) => {
 });
 
 ipcRenderer.on('task-list-progress', (event, data) => {
-    updateListTaskProgress(data.id, data.downloaded, data.total);
+    updateListTaskProgress(data.id, data);
+});
+
+ipcRenderer.on('task-status', (event, data) => {
+    const card = tasksContainer.querySelector(`[data-task-id="${data.id}"]`);
+    if (card) {
+        setTaskStatus(card, data.status);
+    }
 });
 
 ipcRenderer.on('task-completed', (event, taskId) => {
-    removeTaskCard(taskId);
     ipcRenderer.send('flash-frame');
     if (systemNotificationOnComplete && Notification.permission === 'granted') {
         new Notification('FetchIT', { body: '下载任务已完成', silent: true });
+    }
+    const card = tasksContainer.querySelector(`[data-task-id="${taskId}"]`);
+    if (card) {
+        const progressBg = card.querySelector('.task-progress-bg');
+        if (progressBg) progressBg.style.width = '100%';
+        const progressText = card.querySelector('.task-progress-text');
+        if (progressText) progressText.textContent = '100%';
+        const speedDiv = card.querySelector('.task-speed');
+        if (speedDiv) speedDiv.textContent = '';
+        setTaskStatus(card, 'completed');
+        const pauseBtn = card.querySelector('.task-action-pause');
+        if (pauseBtn) pauseBtn.style.display = 'none';
+        card.dataset.completed = '1';
+        setTimeout(() => {
+            const stillThere = tasksContainer.querySelector(`[data-task-id="${taskId}"]`);
+            if (stillThere && stillThere.dataset.completed === '1') {
+                removeTaskCard(taskId);
+            }
+        }, 2500);
     }
 });
 
@@ -1273,3 +1432,36 @@ ipcRenderer.on('update-task-info', (event, data) => {
 
 updateQueueCount();
 updateErrorCount();
+
+const closeChoiceOverlay = document.getElementById('closeChoiceOverlay');
+const closeChoiceModal = document.getElementById('closeChoiceModal');
+const closeChoiceQuitBtn = document.getElementById('closeChoiceQuitBtn');
+const closeChoiceMinimizeBtn = document.getElementById('closeChoiceMinimizeBtn');
+const closeChoiceRemember = document.getElementById('closeChoiceRemember');
+
+function showCloseChoice() {
+    if (!closeChoiceModal) return;
+    if (closeChoiceRemember) closeChoiceRemember.checked = false;
+    closeChoiceModal.classList.add('show');
+    if (closeChoiceOverlay) closeChoiceOverlay.classList.add('show');
+}
+
+function chooseCloseAction(action) {
+    const remember = !!(closeChoiceRemember && closeChoiceRemember.checked);
+    closeChoiceModal.classList.remove('show');
+    if (closeChoiceOverlay) closeChoiceOverlay.classList.remove('show');
+    ipcRenderer.send('close-window-choice', { action, remember });
+}
+
+if (closeChoiceQuitBtn) closeChoiceQuitBtn.addEventListener('click', () => chooseCloseAction('quit'));
+if (closeChoiceMinimizeBtn) closeChoiceMinimizeBtn.addEventListener('click', () => chooseCloseAction('minimize'));
+if (closeChoiceOverlay) {
+    closeChoiceOverlay.addEventListener('click', () => {
+        closeChoiceModal.classList.remove('show');
+        closeChoiceOverlay.classList.remove('show');
+    });
+}
+
+ipcRenderer.on('show-close-choice', () => {
+    showCloseChoice();
+});

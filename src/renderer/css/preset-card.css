@@ -6,7 +6,7 @@
     height: 70%;
     background-color: var(--surface-color);
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-    padding: 20px 24px;
+    padding: 22px 24px;
     transform: translateY(100%);
     transition: transform var(--transition-slow);
     display: flex;
@@ -47,13 +47,11 @@
     font-size: var(--text-md);
     resize: none;
     outline: none;
-    font-family: inherit;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast);
 }
 
 #urlInput:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 #urlInput::placeholder {
@@ -66,27 +64,29 @@
     gap: 8px;
 }
 
-.paste-btn, .advanced-btn {
+.paste-btn,
+.advanced-btn {
     width: 44px;
     height: 44px;
     border: none;
     background-color: var(--primary-color);
     color: var(--on-primary);
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-md);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color var(--transition-normal), box-shadow var(--transition-normal);
+    transition: background-color var(--transition-normal);
     flex-shrink: 0;
 }
 
-.paste-btn:hover, .advanced-btn:hover {
+.paste-btn:hover,
+.advanced-btn:hover {
     background-color: var(--primary-hover);
-    box-shadow: var(--shadow-primary);
 }
 
-.paste-btn:active, .advanced-btn:active {
+.paste-btn:active,
+.advanced-btn:active {
     background-color: var(--primary-active);
 }
 
@@ -165,72 +165,21 @@ body.liquid-glass .advanced-options {
     color: var(--text-primary);
 }
 
-.toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 44px;
-    height: 22px;
-}
-
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.toggle-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--background-tertiary);
-    transition: var(--transition-fast);
-    border-radius: var(--radius-pill);
-}
-
-.toggle-slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 3px;
-    bottom: 3px;
-    background-color: var(--text-secondary);
-    transition: var(--transition-fast);
-    border-radius: 50%;
-}
-
-.toggle-switch:hover .toggle-slider {
-    background-color: var(--border-color);
-}
-
-.toggle-switch input:checked + .toggle-slider {
-    background-color: var(--primary-color);
-}
-
-.toggle-switch input:checked + .toggle-slider:before {
-    transform: translateX(22px);
-    background-color: var(--on-primary);
-}
-
 .advanced-input {
     width: 100%;
     height: 36px;
     padding: 0 12px;
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     background: var(--background-tertiary);
     color: var(--text-primary);
     font-size: var(--text-base);
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast);
 }
 
 .advanced-input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .advanced-input-group {
@@ -304,17 +253,16 @@ body.liquid-glass .advanced-options {
     height: 36px;
     padding: 6px 12px;
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     background: var(--background-secondary);
     color: var(--text-primary);
     font-size: var(--text-sm);
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast);
     outline: none;
 }
 
 .direct-input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .direct-input::-webkit-outer-spin-button,
@@ -343,7 +291,7 @@ body.liquid-glass .advanced-options {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color var(--transition-normal), color var(--transition-normal), box-shadow var(--transition-normal);
+    transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 .confirm-btn {
@@ -353,7 +301,6 @@ body.liquid-glass .advanced-options {
 
 .confirm-btn:hover {
     background-color: var(--primary-hover);
-    box-shadow: var(--shadow-primary);
 }
 
 .confirm-btn:active {
@@ -368,8 +315,4 @@ body.liquid-glass .advanced-options {
 .cancel-btn:hover {
     background-color: var(--surface-hover);
     color: var(--text-primary);
-}
-
-.cancel-btn:active {
-    background-color: var(--background-tertiary);
 }

@@ -75,7 +75,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    animation: helpModalSlideIn 0.3s ease-out;
+    animation: helpModalSlideIn var(--transition-normal);
     box-shadow: var(--shadow-lg);
 }
 
@@ -175,14 +175,12 @@
     font-size: var(--text-sm);
     font-weight: 600;
     cursor: pointer;
-    font-family: inherit;
-    transition: background var(--transition-fast), box-shadow var(--transition-fast);
+    transition: background var(--transition-fast);
     flex-shrink: 0;
 }
 
 .btn-primary:hover {
     background: var(--primary-hover);
-    box-shadow: var(--shadow-primary);
 }
 
 .btn-primary:active {
@@ -201,7 +199,6 @@
     font-size: var(--text-sm);
     font-weight: 600;
     cursor: pointer;
-    font-family: inherit;
     transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 
@@ -229,7 +226,7 @@
     border-radius: var(--radius-md);
     padding: 14px 10px 12px;
     cursor: pointer;
-    transition: border-color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -240,8 +237,6 @@
 .cookie-card:hover {
     border-color: var(--primary-color);
     background: var(--primary-lighter);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
 }
 
 .cookie-card-icon {
@@ -307,10 +302,10 @@
     line-height: 1.6;
 }
 
-.cookie-card-delete {
+.cookie-card-delete,
+.cookie-card-rename {
     position: absolute;
     top: 6px;
-    right: 6px;
     width: 26px;
     height: 26px;
     display: inline-flex;
@@ -322,28 +317,19 @@
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.cookie-card-delete {
+    right: 6px;
+}
+
+.cookie-card-rename {
+    left: 6px;
 }
 
 .cookie-card-delete:hover {
     background: var(--danger-bg);
     color: var(--danger-color);
-}
-
-.cookie-card-rename {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    width: 26px;
-    height: 26px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background: transparent;
-    color: var(--text-quaternary);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .cookie-card-rename:hover {
@@ -368,7 +354,7 @@
     margin: 0;
     padding: 16px 18px;
     color: var(--text-secondary);
-    font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 12px;
     line-height: 1.7;
     white-space: pre-wrap;
@@ -391,7 +377,6 @@
     font-weight: 500;
     text-align: center;
     background: transparent;
-    font-family: inherit;
     cursor: pointer;
     transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
     flex-shrink: 0;
@@ -447,7 +432,7 @@
     align-items: center;
     justify-content: center;
     color: var(--text-primary);
-    transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .cookie-sel-card:hover {
@@ -460,7 +445,6 @@
     border-color: var(--primary-color);
     background: var(--primary-light);
     color: var(--primary-color);
-    box-shadow: 0 0 0 2px var(--primary-lighter);
 }
 
 .cookie-sel-label {
@@ -481,7 +465,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    animation: helpModalSlideIn 0.3s ease-out;
+    animation: helpModalSlideIn var(--transition-normal);
     box-shadow: var(--shadow-lg);
 }
 
@@ -502,47 +486,6 @@
     flex-shrink: 0;
 }
 
-.cookie-format-select {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.cookie-format-label {
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-    flex-shrink: 0;
-}
-
-.cookie-format-options {
-    display: inline-flex;
-    gap: 6px;
-}
-
-.cookie-format-option {
-    padding: 5px 12px;
-    border: 1px solid var(--border-color);
-    background: var(--background-tertiary);
-    color: var(--text-secondary);
-    border-radius: var(--radius-pill);
-    font-size: var(--text-xs);
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
-}
-
-.cookie-format-option:hover {
-    border-color: var(--border-strong);
-    color: var(--text-primary);
-}
-
-.cookie-format-option.active {
-    border-color: var(--primary-color);
-    background: var(--primary-light);
-    color: var(--primary-color);
-}
-
 .cookie-name-input {
     width: 100%;
     height: 40px;
@@ -551,16 +494,14 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     color: var(--text-primary);
-    font-family: inherit;
     font-size: var(--text-base);
     outline: none;
     box-sizing: border-box;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast);
 }
 
 .cookie-name-input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .cookie-name-error {
@@ -589,18 +530,17 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     color: var(--text-primary);
-    font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 12px;
     line-height: 1.6;
     outline: none;
     box-sizing: border-box;
     resize: vertical;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast);
 }
 
 .cookie-content-input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .cookie-content-input::placeholder {
@@ -614,7 +554,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    animation: helpModalSlideIn 0.3s ease-out;
+    animation: helpModalSlideIn var(--transition-normal);
     box-shadow: var(--shadow-lg);
 }
 
@@ -644,20 +584,13 @@
     border-radius: var(--radius-md);
     cursor: pointer;
     text-align: left;
-    font-family: inherit;
     color: var(--text-primary);
-    transition: border-color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .cookie-method-option:hover {
     border-color: var(--primary-color);
     background: var(--primary-lighter);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
-}
-
-.cookie-method-option:active {
-    transform: translateY(0);
 }
 
 .cookie-method-option-icon {
@@ -714,21 +647,15 @@
     justify-content: space-between;
     gap: 10px;
     color: var(--text-secondary);
-    font-family: inherit;
     font-size: var(--text-sm);
     font-weight: 500;
-    transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .advanced-trigger-btn:hover:not(:disabled) {
     border-color: var(--primary-color);
     background-color: var(--surface-hover);
     color: var(--text-primary);
-    box-shadow: 0 0 0 2px var(--primary-lighter);
-}
-
-.advanced-trigger-btn:active:not(:disabled) {
-    transform: scale(0.995);
 }
 
 .advanced-trigger-btn:disabled {
@@ -782,4 +709,13 @@ body.liquid-glass .cookie-method-content,
 body.liquid-glass .cookie-name-modal .cookie-name-content,
 body.liquid-glass .cookie-extract-modal .cookie-name-content {
     --surface-color: rgba(22, 23, 31, 0.95);
+}
+
+.cookie-name-hint {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    line-height: 1.5;
+    background: var(--background-tertiary);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
 }

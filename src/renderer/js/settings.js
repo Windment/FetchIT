@@ -1,4 +1,4 @@
-const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+const resetSettingsBtn = document.getElementById('resetSettingsBtn');
 const browsePathBtn = document.getElementById('browsePathBtn');
 const cookiePoolPath = document.getElementById('cookiePoolPath');
 const browseCookiePoolBtn = document.getElementById('browseCookiePoolBtn');
@@ -184,8 +184,8 @@ ipcRenderer.on('background-image-selected', (event, path) => {
     }
 });
 
-saveSettingsBtn.addEventListener('click', () => {
-    const settings = {
+function collectSettings() {
+    return {
         savePath: savePath.value,
         cookiePool: cookiePoolPath.value,
         maxConcurrentTasks: parseInt(maxConcurrentTasks.value),
@@ -218,38 +218,16 @@ saveSettingsBtn.addEventListener('click', () => {
         closeBehavior: currentCloseBehavior,
         openOutputOnClose: openOutputOnCloseToggle.checked
     };
+}
 
-    ipcRenderer.send('save-settings', settings);
-});
+function saveCurrentSettings() {
+    ipcRenderer.send('save-settings', collectSettings());
+}
 
-let resetPending = false;
-let resetRestoreTimer = null;
-
-saveSettingsBtn.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    if (resetRestoreTimer) {
-        clearTimeout(resetRestoreTimer);
-    }
-    if (!resetPending) {
-        resetPending = true;
-        saveSettingsBtn.classList.add('reset-pending');
-        saveSettingsBtn.textContent = '再次右键以初始化设置';
-        resetRestoreTimer = setTimeout(() => {
-            resetPending = false;
-            saveSettingsBtn.classList.remove('reset-pending');
-            saveSettingsBtn.textContent = '保存';
-            resetRestoreTimer = null;
-        }, 3000);
-    } else {
-        resetPending = false;
-        if (resetRestoreTimer) {
-            clearTimeout(resetRestoreTimer);
-            resetRestoreTimer = null;
-        }
-        saveSettingsBtn.classList.remove('reset-pending');
-        saveSettingsBtn.textContent = '保存';
+resetSettingsBtn.addEventListener('click', () => {
+    showConfirmModal('初始化设置', '确定要恢复所有设置为默认值吗？此操作不可撤销。', () => {
         ipcRenderer.send('reset-settings');
-    }
+    });
 });
 
 browsePathBtn.addEventListener('click', () => {
@@ -406,7 +384,7 @@ ipcRenderer.on('settings-data', (event, settings) => {
     if (settings.closeBehavior) {
         setCloseBehavior(settings.closeBehavior);
     } else {
-        setCloseBehavior('quit');
+        setCloseBehavior('ask');
     }
 
     openOutputOnCloseToggle.checked = !!settings.openOutputOnClose;
@@ -416,12 +394,6 @@ ipcRenderer.on('settings-data', (event, settings) => {
 
 ipcRenderer.on('save-path-selected', (event, path) => {
     savePath.value = path;
-});
-
-ipcRenderer.on('settings-saved', () => {
-    showNotification('设置已保存');
-    settingsModal.classList.remove('show');
-    document.getElementById('settingsModalOverlay').classList.remove('show');
 });
 
 numberUpBtns.forEach(btn => {
@@ -535,7 +507,17 @@ document.addEventListener('drop', (e) => {
     if (files.length > 0) {
         const file = files[0];
         if (file.name.endsWith('.json')) {
-            ipcRenderer.send('import-settings-from-path', file.path);
+            let filePath = '';
+            try {
+                filePath = webUtils.getPathForFile(file) || '';
+            } catch (err) {
+                filePath = '';
+            }
+            if (filePath) {
+                ipcRenderer.send('import-settings-from-path', filePath);
+            } else {
+                showNotification('无法读取该文件的路径，请使用「导入设置」按钮', 'error');
+            }
         }
     }
 });
@@ -545,7 +527,6 @@ const helpModalTitle = document.getElementById('helpModalTitle');
 const helpModalBody = document.getElementById('helpModalBody');
 const helpModalClose = document.getElementById('helpModalClose');
 
-//所有的功能帮助信息
 const helpContent = {
     savePath: {
         title: '保存位置',
@@ -637,7 +618,7 @@ const helpContent = {
     },
     closeBehavior: {
         title: '关闭时行为',
-        content: '<p>选择点击右上角关闭按钮时的行为。</p><p><strong>最小化到系统托盘</strong>：窗口将隐藏到任务栏通知区域，单击托盘图标或菜单可恢复窗口；右键托盘图标可直接打开输出文件夹或彻底退出。</p><p><strong>关闭FetchIT（默认）</strong>：直接退出应用。</p>'
+        content: '<p>选择点击右上角关闭按钮时的行为。</p><p><strong>每次询问</strong>：每次关闭时弹窗让您选择退出还是最小化（可勾选"不再询问"记住选择）。</p><p><strong>最小化到系统托盘</strong>：窗口将隐藏到任务栏通知区域，单击托盘图标或菜单可恢复窗口；右键托盘图标可直接打开输出文件夹或彻底退出。</p><p><strong>关闭FetchIT</strong>：直接退出应用。</p>'
     },
     openOutputOnClose: {
         title: '关闭时同时打开输出位置',

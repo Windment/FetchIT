@@ -1,3 +1,18 @@
+.error-panel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1999;
+    background: rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.error-panel-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
 .error-panel {
     position: fixed;
     top: 0;
@@ -7,7 +22,8 @@
     background-color: var(--surface-color);
     z-index: 2000;
     transform: translateX(100%);
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform var(--transition-slow);
+    box-shadow: var(--shadow-lg);
 }
 
 .error-panel.show {
@@ -21,7 +37,6 @@
     align-items: center;
     padding: 0 20px;
     border-bottom: 1px solid var(--border-color);
-    background-color: var(--background-tertiary);
 }
 
 .error-panel-header h2 {
@@ -35,11 +50,12 @@
     gap: 6px;
 }
 
-.error-panel-refresh {
+.error-panel-refresh,
+.error-panel-clear {
     width: 32px;
     height: 32px;
     border: none;
-    background: var(--background-secondary);
+    background: transparent;
     color: var(--text-secondary);
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -50,22 +66,8 @@
 }
 
 .error-panel-refresh:hover {
-    background: var(--background-primary);
+    background: var(--surface-hover);
     color: var(--text-primary);
-}
-
-.error-panel-clear {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: var(--background-secondary);
-    color: var(--text-secondary);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .error-panel-clear:hover {
@@ -96,12 +98,11 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: 14px;
-    transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+    transition: border-color var(--transition-normal);
 }
 
 .error-item:hover {
-    border-color: var(--danger-color);
-    box-shadow: var(--shadow-sm);
+    border-color: var(--border-strong);
 }
 
 .error-item-header {
@@ -130,24 +131,7 @@
     align-items: center;
 }
 
-.error-item-toggle {
-    background: none;
-    border: none;
-    color: var(--text-tertiary);
-    cursor: pointer;
-    padding: 5px;
-    border-radius: var(--radius-sm);
-    transition: background-color var(--transition-fast), color var(--transition-fast);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.error-item-toggle:hover {
-    background-color: var(--background-tertiary);
-    color: var(--text-primary);
-}
-
+.error-item-toggle,
 .error-item-copy {
     background: none;
     border: none;
@@ -161,6 +145,7 @@
     justify-content: center;
 }
 
+.error-item-toggle:hover,
 .error-item-copy:hover {
     background-color: var(--background-tertiary);
     color: var(--text-primary);
@@ -172,7 +157,7 @@
     border-top: 1px solid var(--border-color);
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease, padding-top 0.3s ease, opacity 0.3s ease;
+    transition: max-height 300ms ease, padding-top 300ms ease, opacity 300ms ease;
     opacity: 0;
 }
 
@@ -189,5 +174,5 @@
     background-color: var(--background-tertiary);
     padding: 10px;
     border-radius: var(--radius-sm);
-    font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    font-family: var(--font-mono);
 }

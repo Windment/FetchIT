@@ -1,4 +1,23 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, webUtils } = require('electron');
+
+window.addEventListener('error', (event) => {
+    try {
+        ipcRenderer.send('renderer-log', {
+            level: 'error',
+            module: 'renderer',
+            args: ['未捕获异常：', event.message, '@', event.filename, ':', event.lineno]
+        });
+    } catch (e) {}
+});
+window.addEventListener('unhandledrejection', (event) => {
+    try {
+        ipcRenderer.send('renderer-log', {
+            level: 'error',
+            module: 'renderer',
+            args: ['未处理的 Promise 拒绝：', String(event.reason)]
+        });
+    } catch (e) {}
+});
 
 let notificationDuration = 3000;
 let systemNotificationOnComplete = true;
@@ -87,7 +106,8 @@ const overlayBlurSelectors = [
     '.help-modal',
     '.about-modal',
     '.playlist-select-modal',
-    '.selection-dialog'
+    '.selection-dialog',
+    '.close-choice-modal'
 ];
 
 const overlayBlurElements = overlayBlurSelectors

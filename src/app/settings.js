@@ -1,6 +1,7 @@
 const { app, ipcMain, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const log = require('./logger');
 const ctx = require('./context');
 
 ipcMain.on('get-settings', (event) => {
@@ -35,6 +36,7 @@ ipcMain.on('save-settings', (event, newSettings) => {
     ctx.ensureDirectoryExists(ctx.settings.savePath);
     try { ctx.ensureDirectoryExists(ctx.settings.cookiePool); } catch (_) {}
     ctx.saveSettingsToFile();
+    log.info('settings', `设置已保存：关闭行为=${ctx.settings.closeBehavior}，并行数=${ctx.settings.maxConcurrentTasks}，并发数=${ctx.settings.concurrency}`);
     if (ctx.mainWindow) {
         ctx.mainWindow.webContents.send('notification-duration-updated', ctx.settings.notificationDuration || 3);
         ctx.mainWindow.webContents.send('system-notification-updated', ctx.settings.systemNotificationOnComplete !== false);

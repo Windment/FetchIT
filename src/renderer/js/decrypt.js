@@ -108,7 +108,7 @@ decryptModeBtn.addEventListener('click', () => {
     normalModeBtn.classList.remove('active');
     listModeBtn.classList.remove('active');
     directModeBtn.classList.remove('active');
-    errorPanel.classList.remove('show');
+    closeErrorPanel();
 });
 
 decryptDropzone.addEventListener('click', () => {
@@ -135,7 +135,13 @@ decryptDropzone.addEventListener('drop', (e) => {
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
         for (const file of files) {
-            selectedDecryptFiles.push({ name: file.name, path: file.path || file.name });
+            let filePath = '';
+            try {
+                filePath = webUtils.getPathForFile(file) || '';
+            } catch (err) {
+                filePath = '';
+            }
+            selectedDecryptFiles.push({ name: file.name, path: filePath || file.name });
         }
         updateDecryptCount();
     }

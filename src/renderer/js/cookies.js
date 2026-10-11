@@ -3,7 +3,6 @@ let pendingImportPath = '';
 let pendingImportMode = '';
 let currentCookiePoolPath = '';
 let pendingRenameName = '';
-let pendingImportFormat = 'general';
 
 const advancedBtn = document.getElementById('advancedBtn');
 const closeAdvancedBtn = document.getElementById('closeAdvancedBtn');
@@ -41,7 +40,6 @@ const cookieNameCancel = document.getElementById('cookieNameCancelBtn');
 const cookieNameConfirm = document.getElementById('cookieNameConfirmBtn');
 const cookieNameError = document.getElementById('cookieNameError');
 const cookieNameHeader = document.getElementById('cookieNameHeader');
-const cookieFormatOptions = Array.from(document.querySelectorAll('.cookie-format-option'));
 
 const cookieMethodOverlay = document.getElementById('cookieMethodOverlay');
 const cookieMethodModal = document.getElementById('cookieMethodModal');
@@ -151,30 +149,21 @@ function serializeCookiesToNetscape(cookies) {
     return lines.join('\n') + '\n';
 }
 
-function convertCookieContent(content, format) {
+function convertCookieContent(content) {
     const text = String(content == null ? '' : content);
-    if (format === 'netscape') return text;
     const result = parseCookieText(text);
     const cookies = result && result.ok && result.cookies && result.cookies.length ? result.cookies : null;
     if (!cookies) return null;
-    return serializeCookiesToNetscape(cookies);
+    return {
+        content: serializeCookiesToNetscape(cookies),
+        format: result.format,
+        count: cookies.length
+    };
 }
-
-function setPendingImportFormat(format) {
-    pendingImportFormat = format;
-    cookieFormatOptions.forEach((btn) => {
-        btn.classList.toggle('active', btn.dataset.format === format);
-    });
-}
-
-cookieFormatOptions.forEach((btn) => {
-    btn.addEventListener('click', () => setPendingImportFormat(btn.dataset.format));
-});
 
 function openNameModal(mode) {
     pendingImportMode = mode;
     pendingImportPath = '';
-    setPendingImportFormat('netscape');
     cookieNameInput.value = '';
     cookieNameError.textContent = '';
     if (cookieContentInput) cookieContentInput.value = '';
@@ -358,43 +347,36 @@ if (cookieNameConfirm) {
                 cookieNameError.textContent = '请输入 Cookie 内容';
                 return;
             }
-            const converted = convertCookieContent(content, pendingImportFormat);
+            const converted = convertCookieContent(content);
             if (converted == null) {
-                cookieNameError.textContent = '无法解析该格式的 Cookie 内容';
+                cookieNameError.textContent = '无法识别该 Cookie 内容，请检查后重新粘贴';
                 return;
             }
             ipcRenderer.send('add-cookie-text', {
                 name: name,
-                content: converted
+                content: converted.content
             });
         } else {
             if (!pendingImportPath) {
                 cookieNameError.textContent = '尚未选择要导入的 TXT 文件';
                 return;
             }
-            if (pendingImportFormat === 'netscape') {
-                ipcRenderer.send('add-cookie-file', {
-                    srcPath: pendingImportPath,
-                    name: name
-                });
-                return;
-            }
             let content;
             try {
                 const fs = require('fs');
                 content = fs.readFileSync(pendingImportPath, 'utf8');
-            } catch (_) {
+            } catch (err) {
                 cookieNameError.textContent = '读取源文件失败';
                 return;
             }
-            const converted = convertCookieContent(content, pendingImportFormat);
+            const converted = convertCookieContent(content);
             if (converted == null) {
-                cookieNameError.textContent = '无法解析该格式的 Cookie 内容';
+                cookieNameError.textContent = '无法识别该文件中的 Cookie 内容，请检查文件格式';
                 return;
             }
             ipcRenderer.send('add-cookie-text', {
                 name: name,
-                content: converted
+                content: converted.content
             });
         }
     });

@@ -6,7 +6,7 @@
     height: 70%;
     background-color: var(--surface-color);
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-    padding: 20px 24px;
+    padding: 22px 24px;
     transform: translateY(100%);
     transition: transform var(--transition-slow);
     display: flex;
@@ -82,7 +82,7 @@
     background-color: var(--surface-color);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
-    animation: slideIn var(--transition-normal);
+    animation: slideIn var(--transition-slow);
     transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
@@ -130,7 +130,7 @@
 }
 
 .decrypt-card.removing {
-    animation: decryptSlideOut 0.3s ease forwards;
+    animation: decryptSlideOut 260ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .decrypt-spinner {
@@ -143,10 +143,18 @@
 }
 
 @keyframes decryptSpin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes decryptSlideOut {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(100%); }
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(24px);
+    }
 }

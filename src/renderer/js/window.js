@@ -41,11 +41,26 @@ document.addEventListener('keydown', (e) => {
 
     if (e.key === 'Escape' && errorPanel.classList.contains('show')) {
         e.preventDefault();
-        errorPanel.classList.remove('show');
+        if (typeof closeErrorPanel === 'function') {
+            closeErrorPanel();
+        } else {
+            errorPanel.classList.remove('show');
+        }
+    }
+
+    if (e.key === 'Escape') {
+        const closeChoiceModal = document.getElementById('closeChoiceModal');
+        const closeChoiceOverlay = document.getElementById('closeChoiceOverlay');
+        if (closeChoiceModal && closeChoiceModal.classList.contains('show')) {
+            e.preventDefault();
+            closeChoiceModal.classList.remove('show');
+            if (closeChoiceOverlay) closeChoiceOverlay.classList.remove('show');
+        }
     }
 
     if (e.key === 'Escape' && settingsModal.classList.contains('show')) {
         e.preventDefault();
+        if (typeof saveCurrentSettings === 'function') saveCurrentSettings();
         settingsModal.classList.remove('show');
         document.getElementById('settingsModalOverlay').classList.remove('show');
     }
@@ -71,6 +86,7 @@ document.getElementById('settingsBtn').addEventListener('click', () => {
 });
 
 document.getElementById('settingsModalOverlay').addEventListener('click', () => {
+    if (typeof saveCurrentSettings === 'function') saveCurrentSettings();
     settingsModal.classList.remove('show');
     document.getElementById('settingsModalOverlay').classList.remove('show');
 });

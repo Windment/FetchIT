@@ -2,7 +2,8 @@ const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
 
-const isDev = process.env.NODE_ENV === 'development';
+//开发环境判定：以“是否打包”为准，比 NODE_ENV 更可靠
+const isDev = !app.isPackaged;
 const utilsPath = isDev ? path.join(__dirname, '../../utils') : path.join(process.resourcesPath, 'utils');
 
 //这一坨是默认设置
@@ -41,7 +42,7 @@ const ctx = {
         rememberUserAgent: true,
         lastCookiePath: '',
         lastUserAgent: '',
-        closeBehavior: 'quit',
+        closeBehavior: 'ask',
         openOutputOnClose: false,
         cookiePool: path.join(app.getPath('documents'), 'Mycookies'),
         lastCookieName: '',
@@ -58,6 +59,8 @@ const ctx = {
     saveSettingsToFile() {
         fs.writeFile(ctx.settingsFilePath, JSON.stringify(ctx.settings, null, 4), 'utf8', (error) => {
             if (error) {
+                const log = require('./logger');
+                log.error('settings', '设置写入失败：', error);
             }
         });
     },
