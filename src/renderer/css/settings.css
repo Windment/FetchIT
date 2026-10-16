@@ -63,22 +63,61 @@
 }
 
 .settings-group {
-    margin-bottom: 28px;
+    margin-bottom: 22px;
 }
 
 .settings-group:last-child {
     margin-bottom: 0;
 }
 
+.settings-group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 0 0 10px;
+    margin-bottom: 14px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--divider-soft);
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+}
+
+.settings-group-icon {
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
 .settings-group-title {
+    flex: 1;
     font-size: var(--text-xs);
-    font-weight: 600;
-    color: var(--text-quaternary);
+    font-weight: 700;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin-bottom: 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--divider-soft);
+}
+
+.settings-group-chevron {
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    transform: rotate(90deg);
+    transition: transform var(--transition-fast);
+}
+
+.settings-group.collapsed .settings-group-chevron {
+    transform: rotate(0deg);
+}
+
+.settings-group-body {
+    overflow: hidden;
+    transition: max-height 340ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
+}
+
+.settings-group.collapsed .settings-group-body {
+    max-height: 0;
+    opacity: 0;
 }
 
 .settings-modal .setting-item {
@@ -87,6 +126,51 @@
 
 .settings-modal .setting-item:last-child {
     margin-bottom: 0;
+}
+
+.settings-modal .setting-presets {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: -4px 0 18px;
+}
+
+.settings-modal .setting-presets-label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}
+
+.settings-modal .preset-chips {
+    display: flex;
+    gap: 8px;
+}
+
+.settings-modal .preset-chip {
+    height: 30px;
+    padding: 0 14px;
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+    border-radius: var(--radius-pill);
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.settings-modal .preset-chip:hover {
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+}
+
+.settings-modal .preset-chip.active {
+    border-color: transparent;
+    background-color: var(--primary-color);
+    color: var(--on-primary);
+    box-shadow: var(--shadow-primary);
 }
 
 .settings-modal .setting-label {
@@ -157,6 +241,46 @@
     cursor: not-allowed;
 }
 
+.settings-modal .open-btn {
+    padding: 0 18px;
+    height: 40px;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast), background-color var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.settings-modal .open-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--primary-lighter);
+}
+
+.settings-modal .clear-logs-btn {
+    padding: 0 18px;
+    height: 40px;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color var(--transition-fast), color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.settings-modal .clear-logs-btn:hover {
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+    background-color: var(--danger-bg);
+}
+
 .settings-modal .theme-toggle {
     display: flex;
     gap: 4px;
@@ -193,6 +317,10 @@
     color: var(--on-primary);
 }
 
+.settings-modal #notificationScopeToggle .theme-btn {
+    padding: 2px 12px;
+}
+
 .settings-modal .color-picker-container {
     display: flex;
     flex-direction: column;
@@ -213,7 +341,7 @@
     transition: border-color var(--transition-fast), outline-color var(--transition-fast);
     position: relative;
     outline: 2px solid transparent;
-    outline-offset: 1px;
+    outline-offset: -2px;
 }
 
 .settings-modal .color-option:hover {
@@ -318,10 +446,39 @@
     margin-bottom: 10px;
 }
 
-.settings-reset {
+.settings-actions {
+    display: flex;
+    gap: 10px;
     margin-top: 20px;
     padding-top: 16px;
     border-top: 1px solid var(--divider-soft);
+}
+
+.settings-action-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 40px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.settings-action-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: var(--primary-lighter);
+}
+
+.settings-reset {
+    margin-top: 10px;
 }
 
 .reset-btn {
@@ -341,31 +498,6 @@
     border-color: var(--danger-color);
     color: var(--danger-color);
     background: var(--danger-bg);
-}
-
-.settings-header-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.import-export-btn {
-    width: 36px;
-    height: 36px;
-    border: none;
-    background-color: transparent;
-    color: var(--text-secondary);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color var(--transition-fast), color var(--transition-fast);
-    flex-shrink: 0;
-}
-
-.import-export-btn:hover {
-    background-color: var(--surface-hover);
-    color: var(--text-primary);
 }
 
 .setting-trigger-btn {

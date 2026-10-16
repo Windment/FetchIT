@@ -60,6 +60,42 @@
         <symbol id="icon-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 18 9 12 15 6"></polyline>
         </symbol>
+        <symbol id="icon-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </symbol>
+        <symbol id="icon-tune" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+        </symbol>
+        <symbol id="icon-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </symbol>
+        <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </symbol>
+        <symbol id="icon-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+        </symbol>
+        <symbol id="icon-window" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+        </symbol>
+        <symbol id="icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+        </symbol>
     </svg>
     <div class="title-bar">
         <div class="app-name">FetchIT</div>
@@ -96,7 +132,7 @@
     <div class="main-content">
         <aside class="sidebar" aria-label="主导航">
             <div class="sidebar-section">
-                <div class="sidebar-section-title">下载模式</div>
+                <div class="sidebar-section-title">解析下载</div>
                 <nav class="mode-nav">
                     <button class="mode-btn active" id="normalModeBtn" aria-label="常规模式">
                         <svg class="mode-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -118,19 +154,19 @@
                         </svg>
                         <span class="mode-btn-text">列表</span>
                     </button>
+                </nav>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">附加功能</div>
+                <nav class="mode-nav">
                     <button class="mode-btn" id="directModeBtn" aria-label="直链模式">
                         <svg class="mode-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                         </svg>
-                        <span class="mode-btn-text">直链</span>
+                        <span class="mode-btn-text">直链下载</span>
                     </button>
-                </nav>
-            </div>
-
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">音乐解密</div>
-                <nav class="mode-nav">
                     <button class="mode-btn" id="decryptModeBtn" aria-label="音乐解密">
                         <svg class="mode-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9 18V5l12-2v13"></path>
@@ -296,6 +332,21 @@
                     </label>
                 </div>
             </div>
+            <div class="preset-playlist-items" id="streamModeContainer">
+                <span class="preset-group-label">模式</span>
+                <div class="preset-playlist-options">
+                    <label class="quality-option">
+                        <input type="radio" name="streamMode" value="auto" checked>
+                        <span class="quality-radio"></span>
+                        <span class="quality-name">自动模式</span>
+                    </label>
+                    <label class="quality-option">
+                        <input type="radio" name="streamMode" value="manual">
+                        <span class="quality-radio"></span>
+                        <span class="quality-name">手动模式</span>
+                    </label>
+                </div>
+            </div>
         </div>
         <div class="selection-panel" id="formatPanel">
             <div class="selection-panel-header">
@@ -455,7 +506,7 @@
                         </div>
                         <div class="quality-free-row">
                             <span class="quality-free-label">自由输入</span>
-                            <input type="text" id="qualityResolution" class="quality-input" placeholder="如 1080">
+                            <input type="text" id="qualityResolution" class="quality-input" placeholder="如 7680">
                         </div>
                     </div>
                 </div>
@@ -474,7 +525,7 @@
                         </div>
                         <div class="quality-free-row">
                             <span class="quality-free-label">自由输入</span>
-                            <input type="text" id="qualityFps" class="quality-input" placeholder="如 60">
+                            <input type="text" id="qualityFps" class="quality-input" placeholder="如 120">
                         </div>
                     </div>
                 </div>
@@ -562,34 +613,24 @@
         <div class="settings-modal-content">
             <div class="settings-header">
                 <h2>设置</h2>
-                <div class="settings-header-actions">
-                    <button class="import-export-btn" id="exportSettingsBtn" title="导出设置">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                    </button>
-                    <button class="import-export-btn" id="importSettingsBtn" title="导入设置">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                    </button>
-                </div>
             </div>
 
             <div class="settings-content">
-                <div class="settings-group">
-                    <div class="settings-group-title">常规</div>
+                <div class="settings-group" data-group="storage">
+                    <button class="settings-group-header" type="button">
+                        <svg class="settings-group-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><use href="#icon-folder"/></svg>
+                        <span class="settings-group-title">存储位置</span>
+                        <svg class="settings-group-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                    </button>
+                    <div class="settings-group-body">
                 <div class="setting-item">
                     <label class="setting-label">保存位置<button class="help-btn" data-help="savePath" title="帮助">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
                     </button></label>
                     <div class="setting-input-group">
                         <input type="text" id="savePath" class="setting-input" readonly>
-                        <button class="browse-btn" id="browsePathBtn">浏览</button>
+                        <button class="browse-btn" id="browsePathBtn">选择</button>
+                        <button class="open-btn" data-open-target="savePath">打开</button>
                     </div>
                 </div>
 
@@ -599,29 +640,43 @@
                     </button></label>
                     <div class="setting-input-group">
                         <input type="text" id="cookiePoolPath" class="setting-input" readonly>
-                        <button class="browse-btn" id="browseCookiePoolBtn">选择文件夹</button>
+                        <button class="browse-btn" id="browseCookiePoolBtn">选择</button>
+                        <button class="open-btn" data-open-target="cookiePoolPath">打开</button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">日志存储路径<button class="help-btn" data-help="logPath" title="帮助">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                    </button></label>
+                    <div class="setting-input-group">
+                        <input type="text" id="logPath" class="setting-input" readonly>
+                        <button class="browse-btn" id="browseLogPathBtn">选择</button>
+                        <button class="open-btn" data-open-target="logPath">打开</button>
                     </div>
                 </div>
 
                 <div class="setting-item">
                     <div class="setting-row">
-                        <label class="setting-label">Deno运行时<button class="help-btn" data-help="denoRuntimeEnabled" title="帮助">
+                        <label class="setting-label">清空日志<button class="help-btn" data-help="clearLogs" title="帮助">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
-                        </button>
-                        </label>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="denoRuntimeEnabled" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
+                        </button></label>
+                        <button class="clear-logs-btn" id="clearLogsBtn" type="button">清空</button>
                     </div>
                 </div>
 
+                    </div>
                 </div>
-                <div class="settings-group">
-                    <div class="settings-group-title">下载与网络</div>
+                <div class="settings-group" data-group="performance">
+                    <button class="settings-group-header" type="button">
+                        <svg class="settings-group-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><use href="#icon-tune"/></svg>
+                        <span class="settings-group-title">下载性能</span>
+                        <svg class="settings-group-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                    </button>
+                    <div class="settings-group-body">
                 <div class="setting-item">
                     <div class="setting-row">
-                        <label class="setting-label">任务并行数<button class="help-btn" data-help="maxConcurrentTasks" title="帮助">
+                        <label class="setting-label">并行数<button class="help-btn" data-help="maxConcurrentTasks" title="帮助">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
                         </button></label>
                         <div class="number-input-wrapper">
@@ -644,7 +699,7 @@
 
                 <div class="setting-item">
                     <div class="setting-row">
-                        <label class="setting-label">并发数<button class="help-btn" data-help="concurrency" title="帮助">
+                        <label class="setting-label">分片数<button class="help-btn" data-help="concurrency" title="帮助">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
                         </button></label>
                         <div class="number-input-wrapper">
@@ -656,6 +711,45 @@
                                     </svg>
                                 </button>
                                 <button class="number-control-btn number-down" data-target="concurrency">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-presets">
+                    <span class="setting-presets-label">快速预设</span>
+                    <div class="preset-chips" id="performancePresets">
+                        <button type="button" class="preset-chip" data-max="1" data-frag="4">低占用</button>
+                        <button type="button" class="preset-chip" data-max="3" data-frag="8">均衡</button>
+                        <button type="button" class="preset-chip" data-max="5" data-frag="16">极速</button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">进度冻结重试<button class="help-btn" data-help="progressFreezeRetry" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="progressFreezeRetryEnabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <label class="setting-label">冻结时间（秒）</label>
+                        <div class="number-input-wrapper">
+                            <input type="number" id="progressFreezeRetryValue" class="setting-input" min="10" max="3600" value="180">
+                            <div class="number-controls">
+                                <button class="number-control-btn number-up" data-target="progressFreezeRetryValue">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="18 15 12 9 6 15"></polyline>
+                                    </svg>
+                                </button>
+                                <button class="number-control-btn number-down" data-target="progressFreezeRetryValue">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                         <polyline points="6 9 12 15 18 9"></polyline>
                                     </svg>
@@ -690,6 +784,28 @@
 
                 <div class="setting-item">
                     <div class="setting-row">
+                        <label class="setting-label">Deno运行时<button class="help-btn" data-help="denoRuntimeEnabled" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="denoRuntimeEnabled" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                    </div>
+                </div>
+                <div class="settings-group" data-group="network">
+                    <button class="settings-group-header" type="button">
+                        <svg class="settings-group-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><use href="#icon-globe"/></svg>
+                        <span class="settings-group-title">网络请求</span>
+                        <svg class="settings-group-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                    </button>
+                    <div class="settings-group-body">
+                <div class="setting-item">
+                    <div class="setting-row">
                         <label class="setting-label">IPV4/IPV6<button class="help-btn" data-help="forceIpv4" title="帮助">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
                         </button></label>
@@ -697,36 +813,6 @@
                             <span class="setting-trigger-value" id="ipVersionTriggerValue">默认</span>
                             <svg class="trigger-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
                         </button>
-                    </div>
-                </div>
-
-                <div class="setting-item">
-                    <div class="setting-row">
-                        <label class="setting-label">进度冻结重试<button class="help-btn" data-help="progressFreezeRetry" title="帮助">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
-                        </button></label>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="progressFreezeRetryEnabled">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="setting-row">
-                        <label class="setting-label">冻结时间（秒）</label>
-                        <div class="number-input-wrapper">
-                            <input type="number" id="progressFreezeRetryValue" class="setting-input" min="10" max="3600" value="180">
-                            <div class="number-controls">
-                                <button class="number-control-btn number-up" data-target="progressFreezeRetryValue">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                                        <polyline points="18 15 12 9 6 15"></polyline>
-                                    </svg>
-                                </button>
-                                <button class="number-control-btn number-down" data-target="progressFreezeRetryValue">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -802,9 +888,27 @@
                     <input type="text" id="proxyValue" class="setting-input" placeholder="例如: http://127.0.0.1:8080">
                 </div>
 
+                <div class="setting-item">
+                    <div class="setting-row">
+                        <label class="setting-label">GitHub 下载优化<button class="help-btn" data-help="githubProxy" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="githubProxy" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="settings-group">
-                    <div class="settings-group-title">通知</div>
+
+                    </div>
+                </div>
+                <div class="settings-group" data-group="notify">
+                    <button class="settings-group-header" type="button">
+                        <svg class="settings-group-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><use href="#icon-bell"/></svg>
+                        <span class="settings-group-title">通知</span>
+                        <svg class="settings-group-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                    </button>
+                    <div class="settings-group-body">
                 <div class="setting-item">
                     <label class="setting-label">通知显示时长（秒）<button class="help-btn" data-help="notificationDuration" title="帮助">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
@@ -827,9 +931,27 @@
                     </div>
                 </div>
 
+                <div class="setting-item" id="notificationScopeItem">
+                    <div class="setting-row">
+                        <label class="setting-label">通知范围<button class="help-btn" data-help="systemNotificationScope" title="帮助">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-help"/></svg>
+                        </button></label>
+                        <div class="theme-toggle" id="notificationScopeToggle">
+                            <button class="theme-btn" type="button" data-scope="all" id="scopeAllBtn"><span>全部</span></button>
+                            <button class="theme-btn" type="button" data-scope="error" id="scopeErrorBtn"><span>错误</span></button>
+                        </div>
+                    </div>
                 </div>
-                <div class="settings-group">
-                    <div class="settings-group-title">记忆</div>
+
+                    </div>
+                </div>
+                <div class="settings-group" data-group="memory">
+                    <button class="settings-group-header" type="button">
+                        <svg class="settings-group-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><use href="#icon-bookmark"/></svg>
+                        <span class="settings-group-title">记忆</span>
+                        <svg class="settings-group-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                    </button>
+                    <div class="settings-group-body">
                 <div class="setting-item">
                     <div class="setting-row">
                         <label class="setting-label">记住Cookie<button class="help-btn" data-help="rememberCookie" title="帮助">
@@ -856,9 +978,15 @@
                     </div>
                 </div>
 
+                    </div>
                 </div>
-                <div class="settings-group">
-                    <div class="settings-group-title">关闭行为</div>
+                <div class="settings-group" data-group="window">
+                    <button class="settings-group-header" type="button">
+                        <svg class="settings-group-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><use href="#icon-window"/></svg>
+                        <span class="settings-group-title">窗口行为</span>
+                        <svg class="settings-group-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                    </button>
+                    <div class="settings-group-body">
                 <div class="setting-item">
                     <div class="setting-row">
                         <label class="setting-label">关闭时行为<button class="help-btn" data-help="closeBehavior" title="帮助">
@@ -885,9 +1013,15 @@
                     </div>
                 </div>
 
+                    </div>
                 </div>
-                <div class="settings-group">
-                    <div class="settings-group-title">外观</div>
+                <div class="settings-group" data-group="appearance">
+                    <button class="settings-group-header" type="button">
+                        <svg class="settings-group-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><use href="#icon-palette"/></svg>
+                        <span class="settings-group-title">外观</span>
+                        <svg class="settings-group-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><use href="#icon-chevron-right"/></svg>
+                    </button>
+                    <div class="settings-group-body">
                 <div class="setting-item">
                     <div class="setting-row">
                         <label class="setting-label">主题<button class="help-btn" data-help="theme" title="帮助">
@@ -975,6 +1109,7 @@
                     </div>
                 </div>
 
+                    </div>
                 </div>
             <div class="settings-shortcuts">
                 <div class="shortcut-hint">
@@ -985,6 +1120,25 @@
                     <kbd>Esc</kbd>
                     <span>取消</span>
                 </div>
+            </div>
+
+            <div class="settings-actions">
+                <button class="settings-action-btn" id="importSettingsBtn" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>导入设置</span>
+                </button>
+                <button class="settings-action-btn" id="exportSettingsBtn" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span>导出设置</span>
+                </button>
             </div>
 
             <div class="settings-reset">
@@ -1226,6 +1380,26 @@
         </div>
     </div>
 
+    <div class="playlist-select-modal-overlay" id="streamSelectModalOverlay"></div>
+    <div class="playlist-select-modal" id="streamSelectModal">
+        <div class="playlist-select-content">
+            <div class="playlist-select-header">
+                <h3 id="streamSelectTitle">选择要下载的流</h3>
+                <button class="playlist-select-close" id="streamSelectCloseBtn" type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-close"/></svg>
+                </button>
+            </div>
+            <div class="playlist-select-toolbar">
+                <span class="playlist-select-count" id="streamSelectCount">已选 0 项</span>
+            </div>
+            <div class="playlist-select-body" id="streamSelectList"></div>
+            <div class="playlist-select-footer">
+                <button class="confirm-cancel-btn" id="streamSelectCancelBtn" type="button">取消</button>
+                <button class="confirm-ok-btn" id="streamSelectConfirmBtn" type="button">开始</button>
+            </div>
+        </div>
+    </div>
+
     <div class="help-modal" id="helpModal">
         <div class="help-modal-content">
             <div class="help-modal-header">
@@ -1256,7 +1430,7 @@
 
     <div class="close-choice-overlay" id="closeChoiceOverlay"></div>
     <div class="close-choice-modal" id="closeChoiceModal">
-        <div class="close-choice-title">要关闭 FetchIT 吗？</div>
+        <div class="close-choice-title">如何关闭 FetchIT ？</div>
         <div class="close-choice-desc">选择点击关闭按钮时要执行的操作</div>
         <div class="close-choice-actions">
             <button class="close-choice-btn close-choice-quit" id="closeChoiceQuitBtn" type="button">
@@ -1267,7 +1441,7 @@
             <button class="close-choice-btn close-choice-minimize" id="closeChoiceMinimizeBtn" type="button">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="13" rx="2"></rect><path d="M8 2h8l2 5"></path></svg>
                 <span class="close-choice-btn-title">最小化到系统托盘</span>
-                <span class="close-choice-btn-desc">后台运行，可随时恢复</span>
+                <span class="close-choice-btn-desc">后台运行，可快速恢复</span>
             </button>
         </div>
         <label class="close-choice-remember">
@@ -1293,6 +1467,20 @@
             <div class="about-modal-body">
                 <div class="about-tab-content active" data-tab-content="changelog">
                     <div class="changelog-list">
+                        <div class="changelog-item">
+                            <div class="changelog-version">v1.3.1</div>
+                            <div class="changelog-date">2026-10-16</div>
+                            <ul class="changelog-changes">
+                                <li>新功能：日志功能，之后有问题可以发日志，不再需要在错误面板复制</li>
+                                <li>新功能：常规模式加入了手动档位，适合更专业的用户使用。如果你尝试后不理解里面是什么，可以继续选择自动档。</li>
+                                <li>新设置：Github下载优化，针对直链模式下载Github文件的速度进行改善</li>
+                                <li>优化：调整了设置界面的分类，加入了折叠功能</li>
+                                <li>优化：增加通知范围配置选项。默认全部</li>
+                                <li>优化：设置现在不再需要点击保存按钮</li>
+                                <li>优化：左侧导航栏主功能分类调整</li>
+                                <li>非常感谢 @Rouk 对本次设置相关的贡献！</li>
+                            </ul>
+                        </div>
                         <div class="changelog-item">
                             <div class="changelog-version">v1.3.0</div>
                             <div class="changelog-date">2026-10-11</div>
@@ -1570,7 +1758,7 @@
                     <div class="about-content">
                         <div class="about-item">
                             <span class="about-label">版本</span>
-                            <span class="about-value">1.3.0</span>
+                            <span class="about-value">1.3.1</span>
                         </div>
                         <div class="about-item">
                             <span class="about-label">协议</span>
@@ -1599,6 +1787,22 @@
                         <div class="about-item">
                             <span class="about-label">作者简介</span>
                             <span class="about-value">由🍕 🍫 🍬 🍜 🍚 🍎强力驱动</span>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">网站</span>
+                            <a class="about-value about-link" href="https://fetchitapp.netlify.app" data-url="https://fetchitapp.netlify.app">https://fetchitapp.netlify.app</a>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">赞赏我们</span>
+                            <a class="about-value about-link" href="https://fetchitapp.netlify.app/about#sponsor" data-url="https://fetchitapp.netlify.app/about#sponsor">点击前往</a>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">GitHub</span>
+                            <a class="about-value about-link" href="https://github.com/Windment/FetchIT" data-url="https://github.com/Windment/FetchIT">https://github.com/Windment/FetchIT</a>
+                        </div>
+                        <div class="about-item">
+                            <span class="about-label">Bilibili</span>
+                            <a class="about-value about-link" href="https://space.bilibili.com/3546631764970328?spm_id_from=333.337.0.0" data-url="https://space.bilibili.com/3546631764970328?spm_id_from=333.337.0.0">https://space.bilibili.com/3546631764970328</a>
                         </div>
                     </div>
                 </div>

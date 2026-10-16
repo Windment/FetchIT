@@ -17,7 +17,6 @@ const listResolvers = [
 
 const FREEZE_RETRY_MAX = 5;
 
-//容量统一按 MB（兆字节）换算，兼容二进制（KiB/MiB）与十进制（KB/MB）单位
 const SIZE_UNITS_MB = {
     'B': 1 / 1000000,
     'KB': 1 / 1000,
@@ -65,12 +64,16 @@ function killTaskProcesses(task) {
 
 function checkAllTasksDone() {
     if (ctx.completedTasks + ctx.failedTasks === ctx.totalTasks && ctx.totalTasks > 0) {
-        if (ctx.failedTasks === 0) {
+        const failed = ctx.failedTasks;
+        if (failed === 0) {
             ctx.mainWindow.webContents.send('show-notification', '任务完成');
-            log.info('downloads', `全部任务完成（共 ${ctx.totalTasks} 个）`);
+            log.info('downloads', `All tasks finished (${ctx.totalTasks} total)`);
         } else {
-            ctx.mainWindow.webContents.send('show-notification', `任务完成，有${ctx.failedTasks}个异常`);
-            log.warn('downloads', `全部任务完成，但有 ${ctx.failedTasks} 个异常（共 ${ctx.totalTasks} 个）`);
+            ctx.mainWindow.webContents.send('show-notification', `任务完成，有${failed}个异常`);
+            log.warn('downloads', `All tasks finished with ${failed} failed (${ctx.totalTasks} total)`);
+        }
+        if (ctx.mainWindow && !ctx.mainWindow.isDestroyed()) {
+            ctx.mainWindow.webContents.send('all-tasks-done', { failed: failed });
         }
         ctx.completedTasks = 0;
         ctx.failedTasks = 0;
@@ -92,18 +95,36 @@ ipcMain.on('add-download-task', (event, taskData) => {
 
     ctx.downloadTasks.push(task);
     ctx.totalTasks++;
-    log.info('downloads', `添加任务 #${taskId}（模式：${task.mode}）：${task.url || ''}`);
+    log.info('downloads', `Task #${taskId} added (mode: ${task.mode}): ${task.url || ''}`);
     event.reply('task-added', task);
 
     if (task.mode === 'list') {
         parsePlaylist(task).catch((e) => {
-            log.error('downloads', `任务 #${taskId} 列表解析异常：`, e);
-            failPlaylist(task, '解析列表失败');
+            log.error('downloads', `Task #${taskId} playlist parse error:`, e);
+            failPlaylist(task, '解析列表失败', 'failed to parse playlist');
         });
+    } else if (task.mode === 'normal' && task.streamMode === 'manual') {
+        detectStreams(task);
     } else {
         fetchVideoInfo(task);
         processQueue();
     }
+});
+
+ipcMain.on('confirm-stream-selection', (event, data) => {
+    const task = ctx.downloadTasks.find(t => t.id === data.id);
+    if (!task) return;
+    const formatIds = (data.formatIds || []).filter(Boolean);
+    if (formatIds.length === 0) {
+        if (ctx.mainWindow && !ctx.mainWindow.isDestroyed()) {
+            ctx.mainWindow.webContents.send('show-notification', '请至少选择一个流');
+        }
+        return;
+    }
+    task.selectedFormats = formatIds;
+    task.status = 'pending';
+    log.info('downloads', `Task #${task.id} stream selection confirmed: ${formatIds.join('+')}`);
+    processQueue();
 });
 
 ipcMain.on('fetch-video-info', (event, url) => {
@@ -111,7 +132,7 @@ ipcMain.on('fetch-video-info', (event, url) => {
 });
 
 ipcMain.on('cancel-all-tasks', (event) => {
-    log.warn('downloads', `用户取消全部任务（${ctx.downloadTasks.length} 个）`);
+    log.warn('downloads', `User cancelled all tasks (${ctx.downloadTasks.length})`);
     ctx.downloadTasks.forEach(task => {
         task.status = 'cancelled';
         killTaskProcesses(task);
@@ -128,7 +149,7 @@ ipcMain.on('remove-task', (event, taskId) => {
         task.status = 'cancelled';
         killTaskProcesses(task);
         ctx.downloadTasks.splice(taskIndex, 1);
-        log.info('downloads', `删除任务 #${taskId}（${task.title || task.url || ''}）`);
+        log.info('downloads', `Task #${taskId} removed (${task.title || task.url || ''})`);
         event.reply('task-removed', taskId);
     }
 });
@@ -139,7 +160,7 @@ ipcMain.on('pause-task', (event, taskId) => {
         if (task && task.status === 'pending') {
             task.status = 'paused';
             sendTaskStatus(task, 'paused');
-            log.info('downloads', `任务 #${taskId} 已在队列中暂停`);
+            log.info('downloads', `Task #${taskId} paused while queued`);
         }
         return;
     }
@@ -149,14 +170,14 @@ ipcMain.on('pause-task', (event, taskId) => {
     killTaskProcesses(task);
     sendTaskStatus(task, 'paused');
     sendTaskProgress(task);
-    log.info('downloads', `任务 #${taskId} 已暂停（${task.title || task.url || ''}）`);
+    log.info('downloads', `Task #${taskId} paused (${task.title || task.url || ''})`);
 });
 
 ipcMain.on('resume-task', (event, taskId) => {
     const task = ctx.downloadTasks.find(t => t.id === taskId);
     if (!task || task.status !== 'paused') return;
 
-    log.info('downloads', `任务 #${taskId} 继续下载（${task.title || task.url || ''}）`);
+    log.info('downloads', `Task #${taskId} resumed (${task.title || task.url || ''})`);
     if (task.mode === 'list' && Array.isArray(task.subQueue)) {
         task.status = 'downloading';
         task.activeSubTasks = Math.max(0, task.activeSubTasks || 0);
@@ -185,7 +206,7 @@ ipcMain.on('confirm-list-selection', (event, data) => {
         task.completedSizeMB = 0;
         task.currentItemTotalMB = 0;
         task.currentItemSpeedMBs = 0;
-        log.info('downloads', `任务 #${task.id} 确认选择 ${task.selectedUrls.length} 项，开始下载`);
+        log.info('downloads', `Task #${task.id} selection confirmed with ${task.selectedUrls.length} items, starting download`);
         processQueue();
     }
 });
@@ -227,7 +248,6 @@ function sendTaskProgress(task) {
     }
 }
 
-//列表任务整体进度：每个分集贡献 1/total，当前分集按字节进度折算其中一部分
 function computeListOverallProgress(task) {
     const total = task.totalVideos || 0;
     if (total <= 0) return 0;
@@ -278,8 +298,8 @@ function startDownload(task) {
         task.totalMB = 0;
         task.speedMBs = 0;
 
-        log.info('downloads', `任务 #${task.id} 开始下载（yt-dlp）`);
-        log.debug('downloads', `任务 #${task.id} yt-dlp 参数：${args.join(' ')}`);
+        log.info('downloads', `Task #${task.id} download started (yt-dlp)`);
+        log.debug('downloads', `Task #${task.id} yt-dlp args: ${args.join(' ')}`);
 
         const process = spawn(ctx.ytdlpPath, args, {
             cwd: ctx.settings.savePath
@@ -294,7 +314,7 @@ function startDownload(task) {
             const freezeThreshold = ctx.settings.progressFreezeRetry?.value || 180;
             if (elapsed <= freezeThreshold) return;
 
-            log.warn('downloads', `任务 #${task.id} 进度冻结超过 ${freezeThreshold} 秒，自动重试`);
+            log.warn('downloads', `Task #${task.id} progress frozen over ${freezeThreshold}s, auto retrying`);
             clearInterval(freezeCheckInterval);
             task.freezeRetrying = (task.retryCount || 0) < FREEZE_RETRY_MAX;
             killProcessTree(task.process);
@@ -313,7 +333,7 @@ function startDownload(task) {
         process.stderr.on('data', (data) => stderrReader.write(data));
 
         process.on('error', (err) => {
-            log.error('downloads', `任务 #${task.id} yt-dlp 进程启动失败：`, err);
+            log.error('downloads', `Task #${task.id} failed to start yt-dlp process:`, err);
         });
 
         process.on('close', (code) => {
@@ -321,7 +341,6 @@ function startDownload(task) {
             stdoutReader.flush();
             stderrReader.flush();
 
-            //暂停/删除时不判定为失败，也不重复计数
             if (task.status === 'paused' || task.status === 'cancelled') {
                 task.freezeRetrying = false;
                 ctx.activeDownloads = Math.max(0, ctx.activeDownloads - 1);
@@ -334,7 +353,7 @@ function startDownload(task) {
                 task.freezeRetrying = false;
                 task.status = 'pending';
                 task.retryCount = (task.retryCount || 0) + 1;
-                log.info('downloads', `任务 #${task.id} 第 ${task.retryCount} 次冻结重试`);
+                log.info('downloads', `Task #${task.id} freeze retry attempt ${task.retryCount}`);
                 if (ctx.mainWindow) {
                     ctx.mainWindow.webContents.send('task-retry', { id: task.id, retryCount: task.retryCount });
                 }
@@ -345,14 +364,14 @@ function startDownload(task) {
             if (code === 0) {
                 task.status = 'completed';
                 ctx.completedTasks++;
-                log.info('downloads', `任务 #${task.id} 下载完成：${task.title || task.url || ''}`);
+                log.info('downloads', `Task #${task.id} download completed: ${task.title || task.url || ''}`);
                 if (ctx.mainWindow) {
                     ctx.mainWindow.webContents.send('task-completed', task.id);
                 }
             } else {
                 task.status = 'failed';
                 ctx.failedTasks++;
-                log.error('downloads', `任务 #${task.id} 下载失败（退出码 ${code}）：${task.title || task.url || ''}\n${log.maskSensitive(errorOutput.slice(-2000))}`);
+                log.error('downloads', `Task #${task.id} download failed (exit code ${code}): ${task.title || task.url || ''}\n${log.maskSensitive(errorOutput.slice(-2000))}`);
                 if (ctx.mainWindow) {
                     ctx.mainWindow.webContents.send('task-failed', {
                         taskId: task.id,
@@ -379,7 +398,10 @@ function startListDownload(task) {
         const skippedVip = (task.listItems || []).filter((item) => item.vip).length;
         failPlaylist(task, skippedVip > 0
             ? `没有可下载的条目：${skippedVip} 项都需要会员，请先在高级设置里配置该平台的 cookies`
-            : '没有可下载的条目');
+            : '没有可下载的条目',
+            skippedVip > 0
+            ? `no downloadable items: ${skippedVip} require VIP; configure cookies for this platform in advanced settings`
+            : 'no downloadable items');
         return;
     }
 
@@ -397,7 +419,7 @@ function startListDownload(task) {
     task.currentItemSpeedMBs = 0;
     task.processes = [];
 
-    log.info('downloads', `列表任务 #${task.id} 开始：共 ${task.totalVideos} 集（${task.title || ''}）`);
+    log.info('downloads', `List task #${task.id} started: ${task.totalVideos} episodes (${task.title || ''})`);
 
     const initialCount = Math.min(1, task.subQueue.length);
     for (let i = 0; i < initialCount; i++) {
@@ -417,7 +439,7 @@ function prepareCollectionDir(task) {
         );
         return dir;
     } catch (e) {
-        log.warn('downloads', `任务 #${task.id} 分集目录创建失败：`, e);
+        log.warn('downloads', `Task #${task.id} failed to create collection directory:`, e);
         return '';
     }
 }
@@ -442,7 +464,7 @@ function startListSubTask(task) {
     const subTask = { ...task, mode: 'normal', url: videoUrl, filePrefix };
     const args = buildYtdlpArgs(subTask, ctx.ffmpegPath);
 
-    log.debug('downloads', `列表任务 #${task.id} 下载分集：${videoUrl}`);
+    log.debug('downloads', `List task #${task.id} downloading episode: ${videoUrl}`);
 
     const proc = spawn(ctx.ytdlpPath, args, {
         cwd: ctx.settings.savePath
@@ -457,7 +479,7 @@ function startListSubTask(task) {
         if (task.status !== 'downloading' || !ctx.settings.progressFreezeRetry?.enabled) return;
         const threshold = ctx.settings.progressFreezeRetry?.value || 180;
         if ((Date.now() - lastOutputAt) / 1000 <= threshold) return;
-        log.warn('downloads', `列表任务 #${task.id} 分集进度冻结，跳过当前项`);
+        log.warn('downloads', `List task #${task.id} episode progress frozen, skipping current item`);
         clearInterval(freezeCheck);
         task.frozenItems = (task.frozenItems || 0) + 1;
         killProcessTree(proc);
@@ -503,7 +525,7 @@ function startListSubTask(task) {
     proc.stderr.on('data', (data) => stderrReader.write(data));
 
     proc.on('error', (err) => {
-        log.error('downloads', `列表任务 #${task.id} 分集进程启动失败：`, err);
+        log.error('downloads', `List task #${task.id} failed to start episode process:`, err);
     });
 
     proc.on('close', (code) => {
@@ -522,10 +544,10 @@ function startListSubTask(task) {
         if (code === 0) {
             task.completedSubTasks++;
             task.completedSizeMB = (task.completedSizeMB || 0) + subLastTotalMB;
-            log.debug('downloads', `列表任务 #${task.id} 分集完成（累计 ${task.completedSubTasks}/${task.totalVideos}）`);
+            log.debug('downloads', `List task #${task.id} episode completed (${task.completedSubTasks}/${task.totalVideos})`);
         } else {
             task.failedSubTasks++;
-            log.warn('downloads', `列表任务 #${task.id} 分集失败（退出码 ${code}）：${videoUrl}\n${log.maskSensitive(errorOutput.slice(-1500))}`);
+            log.warn('downloads', `List task #${task.id} episode failed (exit code ${code}): ${videoUrl}\n${log.maskSensitive(errorOutput.slice(-1500))}`);
         }
         task.downloadedVideos = task.completedSubTasks + task.failedSubTasks;
         task.currentItemTotalMB = 0;
@@ -552,14 +574,14 @@ function maybeFinishListTask(task) {
     if (task.failedSubTasks === 0) {
         task.status = 'completed';
         ctx.completedTasks++;
-        log.info('downloads', `列表任务 #${task.id} 全部完成：${task.title || ''}（共 ${task.totalVideos} 集）`);
+        log.info('downloads', `List task #${task.id} completed: ${task.title || ''} (${task.totalVideos} episodes)`);
         if (ctx.mainWindow) {
             ctx.mainWindow.webContents.send('task-completed', task.id);
         }
     } else {
         task.status = 'failed';
         ctx.failedTasks++;
-        log.warn('downloads', `列表任务 #${task.id} 结束：${task.failedSubTasks}/${task.totalVideos} 个分集失败`);
+        log.warn('downloads', `List task #${task.id} finished: ${task.failedSubTasks}/${task.totalVideos} episodes failed`);
         if (ctx.mainWindow) {
             ctx.mainWindow.webContents.send('task-failed', {
                 taskId: task.id,
@@ -573,6 +595,21 @@ function maybeFinishListTask(task) {
     ctx.downloadTasks = ctx.downloadTasks.filter(t => t.id !== task.id);
 
     checkAllTasksDone();
+}
+
+function applyGithubProxy(url) {
+    if (!ctx.settings.githubProxy) return url;
+    try {
+        const u = new URL(url);
+        const host = u.hostname.toLowerCase();
+        const isGithub = host === 'github.com' || host.endsWith('.github.com') ||
+            host === 'githubusercontent.com' || host.endsWith('.githubusercontent.com') ||
+            host === 'github.io' || host.endsWith('.github.io');
+        if (!isGithub) return url;
+        return 'https://gh-proxy.com/' + url;
+    } catch (e) {
+        return url;
+    }
 }
 
 function startDirectDownload(task) {
@@ -603,9 +640,9 @@ function startDirectDownload(task) {
         args.push('--referer', task.referer);
     }
 
-    args.push(task.url);
+    args.push(applyGithubProxy(task.url));
 
-    log.info('downloads', `任务 #${task.id} 开始下载（aria2c 直链，${segments} 线程）`);
+    log.info('downloads', `Task #${task.id} download started (aria2c direct, ${segments} connections)`);
 
     const process = spawn(ctx.aria2cPath, args);
 
@@ -627,7 +664,7 @@ function startDirectDownload(task) {
     process.stderr.on('data', (data) => stderrReader.write(data));
 
     process.on('error', (err) => {
-        log.error('downloads', `任务 #${task.id} aria2c 进程启动失败：`, err);
+        log.error('downloads', `Task #${task.id} failed to start aria2c process:`, err);
     });
 
     process.on('close', (code) => {
@@ -644,14 +681,14 @@ function startDirectDownload(task) {
         if (code === 0 && task.status !== 'completed') {
             task.status = 'completed';
             ctx.completedTasks++;
-            log.info('downloads', `直链任务 #${task.id} 下载完成：${task.title || task.url || ''}`);
+            log.info('downloads', `Direct task #${task.id} download completed: ${task.title || task.url || ''}`);
             if (ctx.mainWindow) {
                 ctx.mainWindow.webContents.send('task-completed', task.id);
             }
         } else if (code !== 0 && task.status !== 'failed') {
             task.status = 'failed';
             ctx.failedTasks++;
-            log.error('downloads', `直链任务 #${task.id} 下载失败（退出码 ${code}）\n${log.maskSensitive(errorOutput.slice(-2000))}`);
+            log.error('downloads', `Direct task #${task.id} download failed (exit code ${code})\n${log.maskSensitive(errorOutput.slice(-2000))}`);
             if (ctx.mainWindow) {
                 ctx.mainWindow.webContents.send('task-failed', {
                     taskId: task.id,
@@ -742,7 +779,7 @@ function parseDirectProgress(task, output) {
     if (completedMatch && task.status !== 'completed') {
         task.status = 'completed';
         ctx.completedTasks++;
-        log.info('downloads', `直链任务 #${task.id} 下载完成：${task.title || task.url || ''}`);
+        log.info('downloads', `Direct task #${task.id} download completed: ${task.title || task.url || ''}`);
         if (ctx.mainWindow) {
             ctx.mainWindow.webContents.send('task-completed', task.id);
         }
@@ -825,6 +862,12 @@ function buildYtdlpArgs(task, ffmpegPath) {
     if (task.saveThumbnail) {
         args.push('--write-thumbnail');
         args.push('--convert-thumbnails', task.thumbnailFormat || 'jpg');
+    }
+
+    if (task.selectedFormats && task.selectedFormats.length) {
+        args.push('-f', task.selectedFormats.join('+'));
+        args.push(task.url);
+        return args;
     }
 
     const format = task.format;
@@ -927,10 +970,108 @@ function fetchVideoInfo(task) {
                 };
                 ctx.mainWindow.webContents.send('update-task-info', videoInfo);
             } catch (e) {
-                log.warn('downloads', `任务 #${task.id} 视频信息解析失败：`, e);
+                log.warn('downloads', `Task #${task.id} failed to parse video info:`, e);
             }
         }
     });
+}
+
+function detectStreams(task) {
+    task.status = 'awaiting-selection';
+    const args = [
+        '--dump-json',
+        '--no-playlist',
+        ...buildCommonArgs(task),
+        task.url
+    ];
+
+    const process = spawn(ctx.ytdlpPath, args);
+
+    let output = '';
+
+    const stdoutReader = createLineReader((line) => {
+        output += line + '\n';
+    });
+
+    process.stdout.on('data', (data) => stdoutReader.write(data));
+
+    process.on('close', (code) => {
+        stdoutReader.flush();
+        if (code !== 0 || !output.trim()) {
+            failManualTask(task, 'failed to detect streams');
+            return;
+        }
+        try {
+            const info = JSON.parse(output);
+            const formats = extractFormats(info);
+            task.detectedFormats = formats;
+            if (!formats.length) {
+                failManualTask(task, 'no downloadable streams detected');
+                return;
+            }
+            if (ctx.mainWindow && !ctx.mainWindow.isDestroyed()) {
+                ctx.mainWindow.webContents.send('streams-detected', {
+                    id: task.id,
+                    title: info.title || '',
+                    thumbnail: info.thumbnail || '',
+                    formats: formats
+                });
+            }
+        } catch (e) {
+            log.error('downloads', `Task #${task.id} stream detection failed:`, e);
+            failManualTask(task, 'failed to detect streams');
+        }
+    });
+}
+
+function extractFormats(info) {
+    const formats = (info.formats || []).map((f) => {
+        const hasVideo = !!(f.vcodec && f.vcodec !== 'none');
+        const hasAudio = !!(f.acodec && f.acodec !== 'none');
+        let kind = 'muxed';
+        if (hasVideo && !hasAudio) kind = 'video';
+        if (hasAudio && !hasVideo) kind = 'audio';
+        return {
+            id: f.format_id || '',
+            ext: f.ext || '',
+            resolution: f.resolution || ((f.width && f.height) ? `${f.width}x${f.height}` : ''),
+            fps: f.fps != null ? f.fps : '',
+            vcodec: f.vcodec || '',
+            acodec: f.acodec || '',
+            size: formatSizeText(f.filesize || f.filesize_approx),
+            tbr: f.tbr != null ? f.tbr : '',
+            note: f.format_note || '',
+            kind: kind
+        };
+    });
+    return formats.filter((f) => f.id);
+}
+
+function formatSizeText(bytes) {
+    if (!bytes) return '';
+    const n = Number(bytes);
+    if (!n) return '';
+    if (n >= 1073741824) return (n / 1073741824).toFixed(2) + ' GB';
+    if (n >= 1048576) return (n / 1048576).toFixed(1) + ' MB';
+    if (n >= 1024) return (n / 1024).toFixed(0) + ' KB';
+    return n + ' B';
+}
+
+function failManualTask(task, message) {
+    if (!ctx.downloadTasks.some(t => t.id === task.id)) return;
+    task.status = 'failed';
+    ctx.failedTasks++;
+    log.error('downloads', `Task #${task.id} failed: ${message}`);
+    if (ctx.mainWindow && !ctx.mainWindow.isDestroyed()) {
+        ctx.mainWindow.webContents.send('task-failed', {
+            taskId: task.id,
+            error: message,
+            title: task.title,
+            url: task.url
+        });
+    }
+    ctx.downloadTasks = ctx.downloadTasks.filter(t => t.id !== task.id);
+    checkAllTasksDone();
 }
 
 async function parsePlaylist(task) {
@@ -946,12 +1087,12 @@ async function parsePlaylist(task) {
                 break;
             }
         } catch (e) {
-            log.debug('downloads', `列表解析器 ${resolver.name} 未命中：`, e && e.message);
+            log.debug('downloads', `Playlist resolver ${resolver.name} missed:`, e && e.message);
         }
     }
 
     if (result) {
-        log.info('downloads', `列表解析成功（${result.source || 'yt-dlp'}）：${result.title || ''}，共 ${result.items.length} 项`);
+        log.info('downloads', `Playlist parsed (${result.source || 'yt-dlp'}): ${result.title || ''}, ${result.items.length} items`);
         handlePlaylistParsed(task, result);
         return;
     }
@@ -959,12 +1100,12 @@ async function parsePlaylist(task) {
     parsePlaylistWithYtdlp(task);
 }
 
-function failPlaylist(task, message) {
+function failPlaylist(task, message, logMessage) {
     if (!ctx.downloadTasks.some(t => t.id === task.id)) return;
 
     task.status = 'failed';
     ctx.failedTasks++;
-    log.error('downloads', `列表任务 #${task.id} 失败：${message}`);
+    log.error('downloads', `List task #${task.id} failed: ${logMessage || message}`);
     if (ctx.mainWindow) {
         ctx.mainWindow.webContents.send('task-failed', {
             taskId: task.id,
@@ -994,7 +1135,7 @@ function handlePlaylistParsed(task, { title, cover, kind, vipLocked, items }) {
     });
 
     if (!items.length) {
-        failPlaylist(task, '列表中未找到可下载的视频');
+        failPlaylist(task, '列表中未找到可下载的视频', 'no downloadable videos found in playlist');
         return;
     }
 
@@ -1028,7 +1169,7 @@ function handlePlaylistParsed(task, { title, cover, kind, vipLocked, items }) {
     if (skippedVip > 0 && ctx.mainWindow) {
         ctx.mainWindow.webContents.send('show-notification',
             `已跳过 ${skippedVip} 个会员条目（未配置该平台 cookies）`);
-        log.warn('downloads', `任务 #${task.id} 跳过 ${skippedVip} 个会员条目`);
+        log.warn('downloads', `Task #${task.id} skipped ${skippedVip} VIP items`);
     }
 
     task.selectedUrls = items
@@ -1045,7 +1186,7 @@ function parsePlaylistWithYtdlp(task) {
         task.url
     ];
 
-    log.debug('downloads', `任务 #${task.id} 使用 yt-dlp 解析列表`);
+    log.debug('downloads', `Task #${task.id} parsing playlist with yt-dlp`);
 
     const process = spawn(ctx.ytdlpPath, args);
 
@@ -1069,8 +1210,8 @@ function parsePlaylistWithYtdlp(task) {
         stderrReader.flush();
 
         if (code !== 0 || !output.trim()) {
-            log.error('downloads', `任务 #${task.id} yt-dlp 列表解析失败（退出码 ${code}）\n${log.maskSensitive(errorOutput.slice(-1000))}`);
-            failPlaylist(task, '解析列表失败');
+            log.error('downloads', `Task #${task.id} yt-dlp playlist parse failed (exit code ${code})\n${log.maskSensitive(errorOutput.slice(-1000))}`);
+            failPlaylist(task, '解析列表失败', 'failed to parse playlist');
             return;
         }
 
@@ -1110,8 +1251,8 @@ function parsePlaylistWithYtdlp(task) {
                 items: items
             });
         } catch (e) {
-            log.error('downloads', `任务 #${task.id} 列表数据解析异常：`, e);
-            failPlaylist(task, '解析列表失败');
+            log.error('downloads', `Task #${task.id} playlist data parse error:`, e);
+            failPlaylist(task, '解析列表失败', 'failed to parse playlist');
         }
     });
 }
@@ -1153,7 +1294,7 @@ function fetchVideoInfoByUrl(url) {
                     duration: formatDuration(info.duration) || '',
                     thumbnail: info.thumbnail || ''
                 };
-                log.debug('downloads', `链接信息预解析成功：${videoInfo.title || ''}`);
+                log.debug('downloads', `Link info prefetched: ${videoInfo.title || ''}`);
             } catch (e) {
             }
         }

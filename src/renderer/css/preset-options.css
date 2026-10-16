@@ -601,3 +601,9 @@
 .help-btn:active {
     transform: scale(0.95);
 }
+
+.preset-trigger-btn.is-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+}

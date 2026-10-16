@@ -11,6 +11,11 @@ function decryptBaseName(p) {
     return p.split(/[\\/]/).pop();
 }
 
+function getDroppedFilePath(file) {
+    if (file && typeof file.path === 'string' && file.path) return file.path;
+    return '';
+}
+
 function updateDecryptCount() {
     decryptCount.textContent = `已选择 ${selectedDecryptFiles.length} 个文件`;
 }
@@ -134,16 +139,19 @@ decryptDropzone.addEventListener('drop', (e) => {
 
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
+        let failed = 0;
         for (const file of files) {
-            let filePath = '';
-            try {
-                filePath = webUtils.getPathForFile(file) || '';
-            } catch (err) {
-                filePath = '';
+            const filePath = getDroppedFilePath(file);
+            if (!filePath) {
+                failed++;
+                continue;
             }
-            selectedDecryptFiles.push({ name: file.name, path: filePath || file.name });
+            selectedDecryptFiles.push({ name: file.name, path: filePath });
         }
         updateDecryptCount();
+        if (failed > 0) {
+            showNotification('部分文件无法获取路径，请改用点击导入', 'error');
+        }
     }
 });
 

@@ -444,6 +444,21 @@
     font-weight: 500;
 }
 
+.about-link {
+    font-size: 12px;
+    color: var(--primary-color);
+    max-width: 68%;
+    text-align: right;
+    word-break: break-all;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.about-link:hover {
+    text-decoration: underline;
+}
+
 .playlist-select-modal-overlay {
     display: none;
     position: fixed;
@@ -766,6 +781,89 @@
     justify-content: flex-end;
     padding: 14px 20px;
     border-top: 1px solid var(--border-color);
+}
+
+.stream-group-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-tertiary);
+    padding: 6px 4px;
+    letter-spacing: 0.03em;
+}
+
+.stream-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    background-color: var(--background-secondary);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    position: relative;
+}
+
+.stream-item:hover {
+    border-color: var(--border-strong);
+}
+
+.stream-item.selected {
+    border-color: var(--primary-color);
+    background-color: var(--primary-light);
+}
+
+.stream-item input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.stream-item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.stream-item-title {
+    font-size: var(--text-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stream-item-meta {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stream-item-check {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-strong);
+    border-radius: var(--radius-xs);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    font-size: 12px;
+    font-weight: 700;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.stream-item.selected .stream-item-check {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--on-primary);
 }
 
 .close-choice-overlay {

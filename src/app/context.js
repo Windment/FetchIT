@@ -2,7 +2,7 @@ const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
 
-//开发环境判定：以“是否打包”为准，比 NODE_ENV 更可靠
+//开发环境判定
 const isDev = !app.isPackaged;
 const utilsPath = isDev ? path.join(__dirname, '../../utils') : path.join(process.resourcesPath, 'utils');
 
@@ -25,6 +25,7 @@ const ctx = {
     collectionFoldersFile: path.join(app.getPath('userData'), 'collection-folders.json'),
     defaultSettings: {
         savePath: path.join(app.getPath('downloads'), 'FetchIT') + path.sep,
+        logPath: isDev ? path.join(__dirname, '../../logs') : path.join(path.dirname(process.execPath), 'logs'),
         maxConcurrentTasks: 3,
         concurrency: 8,
         forceIpv4: 'default',
@@ -33,11 +34,13 @@ const ctx = {
         rateLimit: { enabled: false, value: '' },
         cookies: { enabled: false, path: '' },
         proxy: { enabled: false, value: '' },
+        githubProxy: true,
         customHeaders: { enabled: false, value: '' },
         theme: 'dark',
         primaryColor: '#0078d4',
         notificationDuration: 3,
         systemNotificationOnComplete: true,
+        systemNotificationScope: 'all',
         rememberCookie: true,
         rememberUserAgent: true,
         lastCookiePath: '',
@@ -60,7 +63,7 @@ const ctx = {
         fs.writeFile(ctx.settingsFilePath, JSON.stringify(ctx.settings, null, 4), 'utf8', (error) => {
             if (error) {
                 const log = require('./logger');
-                log.error('settings', '设置写入失败：', error);
+                log.error('settings', 'Failed to write settings:', error);
             }
         });
     },

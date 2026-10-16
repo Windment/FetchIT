@@ -156,11 +156,11 @@ ipcMain.on('add-cookie-text', (event, payload) => {
     }
     fs.writeFile(target, content, 'utf8', (err) => {
         if (err) {
-            log.error('cookies', `Cookie「${name}」写入 Cookie 池失败：`, err);
+            log.error('cookies', `Failed to write cookie "${name}" to cookie pool:`, err);
             event.reply('add-cookie-file-result', { error: 'copy-failed' });
             return;
         }
-        log.info('cookies', `Cookie「${name}」已保存到 Cookie 池（内容 ${Buffer.byteLength(content, 'utf8')} 字节）`);
+        log.info('cookies', `Cookie "${name}" saved to cookie pool (${Buffer.byteLength(content, 'utf8')} bytes)`);
         event.reply('add-cookie-file-result', { ok: true, name });
         if (ctx.mainWindow) ctx.mainWindow.webContents.send('cookies-list-changed');
     });
@@ -185,11 +185,11 @@ ipcMain.on('delete-cookie-file', (event, nameInput) => {
     const deletedPath = path.resolve(target);
     fs.unlink(target, (err) => {
         if (err) {
-            log.error('cookies', `Cookie「${nameInput}」删除失败：`, err);
+            log.error('cookies', `Failed to delete cookie "${nameInput}":`, err);
             event.reply('delete-cookie-file-result', { error: 'failed' });
             return;
         }
-        log.info('cookies', `Cookie「${nameInput}」已从 Cookie 池删除`);
+        log.info('cookies', `Cookie "${nameInput}" deleted from cookie pool`);
         event.reply('delete-cookie-file-result', { ok: true, deletedPath });
         if (ctx.mainWindow) ctx.mainWindow.webContents.send('cookies-list-changed');
     });
@@ -251,6 +251,7 @@ ipcMain.on('select-cookie-pool', async (event) => {
         ctx.ensureDirectoryExists(newPath);
         ctx.settings.cookiePool = newPath;
         ctx.saveSettingsToFile();
+        log.info('settings', `Cookie pool changed to ${newPath}`);
         event.reply('cookie-pool-changed', newPath);
         if (ctx.mainWindow) ctx.mainWindow.webContents.send('cookies-list-changed');
     } catch (err) {
@@ -336,11 +337,11 @@ function generateExtractCookieName(hostname) {
 ipcMain.on('start-cookie-extract', (event, url) => {
     const parsed = normalizeSiteUrl(url);
     if (!parsed) {
-        log.warn('cookies', `Cookie 提取被拒绝：无效站点地址「${url}」`);
+        log.warn('cookies', `Cookie extraction rejected: invalid site URL "${url}"`);
         event.reply('cookie-extract-error', '无效的站点地址，请输入完整域名');
         return;
     }
-    log.info('cookies', `打开登录站点提取 Cookie：${parsed.hostname}`);
+    log.info('cookies', `Opening login site to extract cookies: ${parsed.hostname}`);
     const partition = 'cookie-extract-' + crypto.randomBytes(6).toString('hex');
     const win = new BrowserWindow({
         width: 1100,
@@ -379,18 +380,18 @@ ipcMain.on('cookie-extract-finish', (event) => {
     const ses = session.fromPartition(info.partition);
     ses.cookies.get({}).then((cookies) => {
         if (!cookies || !cookies.length) {
-            log.warn('cookies', `站点 ${info.hostname} 未检测到任何 Cookie`);
+            log.warn('cookies', `No cookies found on site ${info.hostname}`);
             event.sender.send('cookie-extract-result', { error: 'no-cookies' });
             return;
         }
         const content = buildNetscapeCookieFile(cookies);
         const name = generateExtractCookieName(info.hostname);
-        log.info('cookies', `站点 ${info.hostname} 提取到 ${cookies.length} 条 Cookie，转换为 Netscape 格式保存为「${name}」`);
+        log.info('cookies', `Extracted ${cookies.length} cookies from ${info.hostname}, saved as "${name}" in Netscape format`);
         ctx.ensureDirectoryExists(ctx.settings.cookiePool);
         const target = path.join(ctx.settings.cookiePool, name + '.txt');
         fs.writeFile(target, content, 'utf8', (err) => {
             if (err) {
-                log.error('cookies', `Cookie「${name}」写入失败：`, err);
+                log.error('cookies', `Failed to write cookie "${name}":`, err);
                 event.sender.send('cookie-extract-result', { error: 'write-failed' });
                 return;
             }
@@ -398,7 +399,7 @@ ipcMain.on('cookie-extract-finish', (event) => {
             if (ctx.mainWindow) ctx.mainWindow.webContents.send('cookies-list-changed');
         });
     }).catch((err) => {
-        log.error('cookies', `站点 ${info.hostname} Cookie 读取失败：`, err);
+        log.error('cookies', `Failed to read cookies for site ${info.hostname}:`, err);
         event.sender.send('cookie-extract-result', { error: 'read-failed' });
     });
 });

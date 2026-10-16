@@ -44,6 +44,16 @@ const qualityAudio = document.getElementById('qualityAudio');
 const qualityCustomPanel = document.getElementById('qualityCustomPanel');
 const selectionOverlay = document.getElementById('selectionOverlay');
 const selectionDialog = document.getElementById('selectionDialog');
+const streamModeContainer = document.getElementById('streamModeContainer');
+
+const streamSelectModalOverlay = document.getElementById('streamSelectModalOverlay');
+const streamSelectModal = document.getElementById('streamSelectModal');
+const streamSelectCloseBtn = document.getElementById('streamSelectCloseBtn');
+const streamSelectCancelBtn = document.getElementById('streamSelectCancelBtn');
+const streamSelectConfirmBtn = document.getElementById('streamSelectConfirmBtn');
+const streamSelectCount = document.getElementById('streamSelectCount');
+const streamSelectList = document.getElementById('streamSelectList');
+const streamSelectTitle = document.getElementById('streamSelectTitle');
 
 const playlistSelectModalOverlay = document.getElementById('playlistSelectModalOverlay');
 const playlistSelectModal = document.getElementById('playlistSelectModal');
@@ -106,8 +116,13 @@ let currentQuality = 'best';
 let currentQualityResolution = '';
 let currentQualityFps = '';
 let currentQualityAudio = '';
+let currentStreamMode = 'auto';
+let streamFormatsCache = {};
+let streamMetaCache = {};
+let currentStreamTaskId = null;
 let selectionCloseTimer = null;
 let playlistCloseTimer = null;
+let streamCloseTimer = null;
 
 [formatPanel, thumbnailPanel, codecPanel, qualityPanel].forEach((panel) => {
     if (panel && selectionDialog) selectionDialog.appendChild(panel);
@@ -139,6 +154,25 @@ formatTrigger.addEventListener('click', () => showSelectionPanel(formatPanel));
 thumbnailTrigger.addEventListener('click', () => showSelectionPanel(thumbnailPanel));
 codecTrigger.addEventListener('click', () => showSelectionPanel(codecPanel));
 qualityTrigger.addEventListener('click', () => showSelectionPanel(qualityPanel));
+
+function updateStreamModeUI() {
+    const manual = currentMode === 'normal' && currentStreamMode === 'manual';
+    codecTrigger.disabled = manual;
+    qualityTrigger.disabled = manual;
+    codecTrigger.classList.toggle('is-disabled', manual);
+    qualityTrigger.classList.toggle('is-disabled', manual);
+}
+
+document.querySelectorAll('input[name="streamMode"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+        if (radio.checked) {
+            currentStreamMode = radio.value;
+            updateStreamModeUI();
+        }
+    });
+});
+
+updateStreamModeUI();
 
 formatBackBtn.addEventListener('click', hideSelectionPanel);
 thumbnailBackBtn.addEventListener('click', hideSelectionPanel);
@@ -439,6 +473,8 @@ function markListTaskFiltering(taskId) {
     if (card && card.classList.contains('list-task-card')) {
         card.classList.remove('is-selectable');
         card.classList.add('is-filtering');
+        const badge = card.querySelector('.task-filter-badge');
+        if (badge) badge.remove();
         const infoDiv = card.querySelector('.list-task-info');
         if (infoDiv) {
             const title = infoDiv.textContent.split('：')[0];
@@ -541,7 +577,7 @@ cancelAllBtn.addEventListener('click', () => {
 
 pasteBtn.addEventListener('click', async () => {
     try {
-        const text = await ipcRenderer.invoke('read-clipboard-text');
+        const text = clipboard.readText();
         if (!text || !String(text).trim()) {
             showNotification('剪贴板为空，没有可粘贴的内容', 'error');
             return;
@@ -648,6 +684,7 @@ confirmBtn.addEventListener('click', () => {
         const listSelectMode = currentMode === 'list'
             ? (document.querySelector('input[name="listSelectMode"]:checked')?.value || 'all')
             : 'all';
+        const streamMode = currentMode === 'normal' ? currentStreamMode : 'auto';
 
         urls.forEach(url => {
             const taskData = {
@@ -665,6 +702,7 @@ confirmBtn.addEventListener('click', () => {
                 qualityAudio: qualityAudioValue,
                 mode: currentMode,
                 listSelectMode: listSelectMode,
+                streamMode: streamMode,
                 cookies: {
                     enabled: cookiesEnabled,
                     path: cookiesPath
@@ -705,6 +743,8 @@ function showPresetCard() {
     const isList = currentMode === 'list';
     presetOptions.classList.toggle('is-hidden', isDirect);
     playlistItemsContainer.classList.toggle('is-hidden', !isList);
+    streamModeContainer.classList.toggle('is-hidden', currentMode !== 'normal');
+    updateStreamModeUI();
     document.getElementById('directHint').classList.toggle('show', isDirect);
     document.getElementById('directOptions').classList.toggle('show', isDirect);
     document.getElementById('advancedBtn').classList.toggle('is-hidden', isDirect);
@@ -859,7 +899,20 @@ function createTaskCard(task) {
 
     card.appendChild(progressBg);
     card.appendChild(infoDiv);
-    card.appendChild(createTaskActions(task.id));
+    const actions = createTaskActions(task.id);
+    card.appendChild(actions);
+
+    if (task.streamMode === 'manual') {
+        card.classList.add('is-stream-selectable');
+        card.dataset.awaitingStream = '1';
+        const pauseBtn = actions.querySelector('.task-action-pause');
+        if (pauseBtn) pauseBtn.style.display = 'none';
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.task-actions')) return;
+            if (card.dataset.awaitingStream !== '1') return;
+            openStreamSelect(task.id);
+        });
+    }
 
     return card;
 }
@@ -1313,9 +1366,6 @@ ipcRenderer.on('task-status', (event, data) => {
 
 ipcRenderer.on('task-completed', (event, taskId) => {
     ipcRenderer.send('flash-frame');
-    if (systemNotificationOnComplete && Notification.permission === 'granted') {
-        new Notification('FetchIT', { body: '下载任务已完成', silent: true });
-    }
     const card = tasksContainer.querySelector(`[data-task-id="${taskId}"]`);
     if (card) {
         const progressBg = card.querySelector('.task-progress-bg');
@@ -1343,6 +1393,14 @@ ipcRenderer.on('task-failed', (event, data) => {
     addError({ taskId, error, title, url });
 });
 
+ipcRenderer.on('all-tasks-done', (event, data) => {
+    const failed = data && data.failed ? data.failed : 0;
+    if (!systemNotificationOnComplete || Notification.permission !== 'granted') return;
+    if (systemNotificationScope === 'error' && failed === 0) return;
+    const body = failed > 0 ? `全部任务完成，有 ${failed} 个异常` : '全部任务已完成';
+    new Notification('FetchIT', { body: body, silent: true });
+});
+
 ipcRenderer.on('all-tasks-cancelled', () => {
     tasksContainer.innerHTML = '';
     for (const key in listItemsCache) {
@@ -1351,7 +1409,14 @@ ipcRenderer.on('all-tasks-cancelled', () => {
     for (const key in listMetaCache) {
         delete listMetaCache[key];
     }
+    for (const key in streamFormatsCache) {
+        delete streamFormatsCache[key];
+    }
+    for (const key in streamMetaCache) {
+        delete streamMetaCache[key];
+    }
     currentSelectTaskId = null;
+    currentStreamTaskId = null;
     updateAddButton();
     updateQueueCount();
 });
@@ -1381,7 +1446,13 @@ ipcRenderer.on('playlist-parsed', (event, data) => {
         if (infoDiv) {
             if (card.dataset.listSelectMode === 'manual') {
                 const unit = data.kind === 'music' ? '首' : '集';
-                infoDiv.textContent = `${data.title}：点击筛选 ${data.items.length} ${unit}`;
+                infoDiv.textContent = `${data.title}：共 ${data.items.length} ${unit}`;
+                if (!card.querySelector('.task-filter-badge')) {
+                    const badge = document.createElement('span');
+                    badge.className = 'task-filter-badge';
+                    badge.textContent = '点击筛选';
+                    infoDiv.parentElement.insertBefore(badge, infoDiv);
+                }
             } else if (data.skippedVip > 0) {
                 const unit = data.kind === 'music' ? '首' : '集';
                 infoDiv.textContent = `${data.title}：共${data.items.length}${unit}，已跳过 ${data.skippedVip} 个会员条目（未配置 cookies）`;
@@ -1404,7 +1475,7 @@ ipcRenderer.on('update-task-info', (event, data) => {
             if (infoDiv) {
                 const title = data.title || 'Loading...';
                 if (card.dataset.listSelectMode === 'manual') {
-                    infoDiv.textContent = `${title}：等待筛选`;
+                    infoDiv.textContent = title;
                 } else if (data.totalVideos) {
                     infoDiv.textContent = `${title}：原列表包含${data.totalVideos}个项目`;
                 } else {
@@ -1464,4 +1535,158 @@ if (closeChoiceOverlay) {
 
 ipcRenderer.on('show-close-choice', () => {
     showCloseChoice();
+});
+
+function openStreamSelect(taskId) {
+    const formats = streamFormatsCache[taskId];
+    if (!formats || !formats.length) return;
+    currentStreamTaskId = taskId;
+    streamSelectList.innerHTML = '';
+    const meta = streamMetaCache[taskId] || {};
+    streamSelectTitle.textContent = meta.title ? `${meta.title} · 选择要下载的流` : '选择要下载的流';
+
+    const groups = [
+        { key: 'video', label: '视频流' },
+        { key: 'muxed', label: '视频+音频' },
+        { key: 'audio', label: '音频流' }
+    ];
+
+    groups.forEach(g => {
+        const items = formats.filter(f => f.kind === g.key);
+        if (!items.length) return;
+        const header = document.createElement('div');
+        header.className = 'stream-group-label';
+        header.textContent = g.label;
+        streamSelectList.appendChild(header);
+
+        items.forEach(f => {
+            const row = document.createElement('label');
+            row.className = 'stream-item';
+            row.dataset.group = g.key;
+
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.value = f.id;
+            row.appendChild(input);
+
+            const info = document.createElement('div');
+            info.className = 'stream-item-info';
+
+            const title = document.createElement('span');
+            title.className = 'stream-item-title';
+            const parts = [];
+            if (f.resolution) parts.push(f.resolution);
+            if (f.note) parts.push(f.note);
+            if (f.ext) parts.push(f.ext.toUpperCase());
+            title.textContent = parts.join(' · ') || f.id;
+            info.appendChild(title);
+
+            const metaLine = document.createElement('span');
+            metaLine.className = 'stream-item-meta';
+            const metaParts = [];
+            if (f.vcodec && f.vcodec !== 'none') metaParts.push(f.vcodec);
+            if (f.acodec && f.acodec !== 'none') metaParts.push(f.acodec);
+            if (f.fps) metaParts.push(f.fps + 'fps');
+            if (f.size) metaParts.push(f.size);
+            if (f.tbr) metaParts.push(f.tbr + 'kbps');
+            metaLine.textContent = metaParts.join('  ·  ');
+            info.appendChild(metaLine);
+
+            const checkMark = document.createElement('span');
+            checkMark.className = 'stream-item-check';
+            checkMark.textContent = '✓';
+
+            row.appendChild(info);
+            row.appendChild(checkMark);
+
+            row.addEventListener('click', () => {
+                const willSelect = !input.checked;
+                if (willSelect) {
+                    streamSelectList.querySelectorAll(`.stream-item.selected[data-group="${g.key}"]`).forEach(r => {
+                        r.classList.remove('selected');
+                        const inp = r.querySelector('input');
+                        if (inp) inp.checked = false;
+                    });
+                }
+                input.checked = willSelect;
+                row.classList.toggle('selected', willSelect);
+                updateStreamSelectCount();
+            });
+
+            streamSelectList.appendChild(row);
+        });
+    });
+
+    updateStreamSelectCount();
+    clearTimeout(streamCloseTimer);
+    streamSelectModal.classList.remove('closing');
+    streamSelectModalOverlay.classList.remove('closing');
+    streamSelectModal.classList.add('show');
+    streamSelectModalOverlay.classList.add('show');
+}
+
+function closeStreamSelect() {
+    currentStreamTaskId = null;
+    if (!streamSelectModal.classList.contains('show')) return;
+    streamSelectModal.classList.add('closing');
+    streamSelectModalOverlay.classList.add('closing');
+    clearTimeout(streamCloseTimer);
+    streamCloseTimer = setTimeout(() => {
+        streamSelectModal.classList.remove('show', 'closing');
+        streamSelectModalOverlay.classList.remove('show', 'closing');
+    }, 220);
+}
+
+function updateStreamSelectCount() {
+    const selected = streamSelectList.querySelectorAll('.stream-item.selected').length;
+    streamSelectCount.textContent = `已选 ${selected} 项`;
+}
+
+streamSelectCloseBtn.addEventListener('click', closeStreamSelect);
+streamSelectCancelBtn.addEventListener('click', closeStreamSelect);
+streamSelectModalOverlay.addEventListener('click', closeStreamSelect);
+
+streamSelectConfirmBtn.addEventListener('click', () => {
+    const selectedIds = Array.from(streamSelectList.querySelectorAll('.stream-item.selected input'))
+        .map(input => input.value);
+    if (selectedIds.length === 0) {
+        showNotification('请至少选择一个流', 'error');
+        return;
+    }
+    if (currentStreamTaskId) {
+        const card = tasksContainer.querySelector(`[data-task-id="${currentStreamTaskId}"]`);
+        if (card) {
+            card.dataset.awaitingStream = '';
+            const badge = card.querySelector('.task-filter-badge');
+            if (badge) badge.remove();
+        }
+        ipcRenderer.send('confirm-stream-selection', { id: currentStreamTaskId, formatIds: selectedIds });
+    }
+    closeStreamSelect();
+});
+
+ipcRenderer.on('streams-detected', (event, data) => {
+    streamFormatsCache[data.id] = data.formats;
+    streamMetaCache[data.id] = { title: data.title || '', thumbnail: data.thumbnail || '' };
+    const card = tasksContainer.querySelector(`[data-task-id="${data.id}"]`);
+    if (card) {
+        const titleDiv = card.querySelector('.task-title');
+        if (titleDiv) {
+            titleDiv.textContent = data.title || 'Loading...';
+            if (!card.querySelector('.task-filter-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'task-filter-badge';
+                badge.textContent = '点击筛选流';
+                titleDiv.parentElement.insertBefore(badge, titleDiv);
+            }
+        }
+        if (data.thumbnail) {
+            const coverImg = card.querySelector('.task-cover img');
+            if (coverImg) {
+                coverImg.src = data.thumbnail;
+                const coverDiv = card.querySelector('.task-cover');
+                if (coverDiv) coverDiv.classList.add('show');
+            }
+        }
+    }
 });

@@ -2,6 +2,9 @@ const resetSettingsBtn = document.getElementById('resetSettingsBtn');
 const browsePathBtn = document.getElementById('browsePathBtn');
 const cookiePoolPath = document.getElementById('cookiePoolPath');
 const browseCookiePoolBtn = document.getElementById('browseCookiePoolBtn');
+const logPath = document.getElementById('logPath');
+const browseLogPathBtn = document.getElementById('browseLogPathBtn');
+const clearLogsBtn = document.getElementById('clearLogsBtn');
 const themeDarkBtn = document.getElementById('themeDarkBtn');
 const themeLightBtn = document.getElementById('themeLightBtn');
 const customColorPicker = document.getElementById('customColorPicker');
@@ -23,9 +26,12 @@ const rateLimitEnabled = document.getElementById('rateLimitEnabled');
 const rateLimitValue = document.getElementById('rateLimitValue');
 const proxyEnabled = document.getElementById('proxyEnabled');
 const proxyValue = document.getElementById('proxyValue');
+const githubProxyToggle = document.getElementById('githubProxy');
 const notificationDurationInput = document.getElementById('notificationDuration');
 const denoRuntimeEnabled = document.getElementById('denoRuntimeEnabled');
 const systemNotificationToggle = document.getElementById('systemNotificationOnComplete');
+const notificationScopeItem = document.getElementById('notificationScopeItem');
+const notificationScopeBtns = document.querySelectorAll('#notificationScopeToggle .theme-btn');
 const rememberCookieToggle = document.getElementById('rememberCookie');
 const rememberUserAgentToggle = document.getElementById('rememberUserAgent');
 const openOutputOnCloseToggle = document.getElementById('openOutputOnClose');
@@ -49,6 +55,55 @@ let currentTheme = 'dark';
 let currentPrimaryColor = '#0078d4';
 let currentBackgroundImage = '';
 let currentBackgroundBlur = 10;
+
+const performancePresets = document.getElementById('performancePresets');
+const presetChips = performancePresets ? Array.from(performancePresets.querySelectorAll('.preset-chip')) : [];
+
+function updatePresetActiveState() {
+    const max = parseInt(maxConcurrentTasks.value) || 0;
+    const frag = parseInt(concurrency.value) || 0;
+    presetChips.forEach(chip => {
+        const match = parseInt(chip.dataset.max) === max && parseInt(chip.dataset.frag) === frag;
+        chip.classList.toggle('active', match);
+    });
+}
+
+presetChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+        maxConcurrentTasks.value = chip.dataset.max;
+        concurrency.value = chip.dataset.frag;
+        updatePresetActiveState();
+    });
+});
+
+maxConcurrentTasks.addEventListener('input', updatePresetActiveState);
+concurrency.addEventListener('input', updatePresetActiveState);
+
+let currentNotificationScope = 'all';
+
+function setNotificationScope(scope) {
+    currentNotificationScope = scope === 'error' ? 'error' : 'all';
+    notificationScopeBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.scope === currentNotificationScope);
+    });
+}
+
+function updateNotificationScopeVisibility() {
+    notificationScopeItem.classList.toggle('is-hidden', !systemNotificationToggle.checked);
+}
+
+notificationScopeBtns.forEach(btn => {
+    btn.addEventListener('click', () => setNotificationScope(btn.dataset.scope));
+});
+
+systemNotificationToggle.addEventListener('change', updateNotificationScopeVisibility);
+
+document.querySelectorAll('.open-btn[data-open-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.openTarget);
+        if (input && input.value) ipcRenderer.send('open-folder', input.value);
+    });
+});
 
 function pathToFileUrl(p) {
     return 'file:///' + encodeURI(p.replace(/\\/g, '/'));
@@ -188,6 +243,7 @@ function collectSettings() {
     return {
         savePath: savePath.value,
         cookiePool: cookiePoolPath.value,
+        logPath: logPath.value,
         maxConcurrentTasks: parseInt(maxConcurrentTasks.value),
         concurrency: parseInt(concurrency.value),
         forceIpv4: currentIpVersion,
@@ -206,6 +262,7 @@ function collectSettings() {
             enabled: proxyEnabled.checked,
             value: proxyValue.value
         },
+        githubProxy: githubProxyToggle.checked,
         theme: currentTheme,
         primaryColor: currentPrimaryColor,
         backgroundImage: currentBackgroundImage,
@@ -213,6 +270,7 @@ function collectSettings() {
         notificationDuration: parseInt(notificationDurationInput.value) || 3,
         denoRuntimeEnabled: denoRuntimeEnabled.checked,
         systemNotificationOnComplete: systemNotificationToggle.checked,
+        systemNotificationScope: currentNotificationScope,
         rememberCookie: rememberCookieToggle.checked,
         rememberUserAgent: rememberUserAgentToggle.checked,
         closeBehavior: currentCloseBehavior,
@@ -236,6 +294,25 @@ browsePathBtn.addEventListener('click', () => {
 
 browseCookiePoolBtn.addEventListener('click', () => {
     ipcRenderer.send('select-cookie-pool');
+});
+
+browseLogPathBtn.addEventListener('click', () => {
+    ipcRenderer.send('select-log-path');
+});
+
+clearLogsBtn.addEventListener('click', () => {
+    showConfirmModal('清空日志', '确定要清空日志目录内的所有日志文件吗？此操作不可撤销。', () => {
+        ipcRenderer.send('clear-logs');
+    });
+});
+
+ipcRenderer.on('logs-cleared', (event, data) => {
+    const removed = data && typeof data.removed === 'number' ? data.removed : 0;
+    showNotification(`已清空 ${removed} 个日志文件`, 'success');
+});
+
+ipcRenderer.on('log-path-selected', (event, path) => {
+    logPath.value = path;
 });
 
 ipcRenderer.on('cookie-pool-changed', (event, newPath) => {
@@ -321,8 +398,10 @@ document.querySelectorAll('#closeBehaviorPanel .codec-option input[type="checkbo
 ipcRenderer.on('settings-data', (event, settings) => {
     savePath.value = settings.savePath;
     cookiePoolPath.value = settings.cookiePool || '';
+    logPath.value = settings.logPath || '';
     maxConcurrentTasks.value = settings.maxConcurrentTasks;
     concurrency.value = settings.concurrency;
+    updatePresetActiveState();
     progressFreezeRetryEnabled.checked = settings.progressFreezeRetry?.enabled || false;
     progressFreezeRetryValue.value = settings.progressFreezeRetry?.value || 180;
     requestIntervalValue.value = settings.requestInterval || 0.5;
@@ -332,6 +411,7 @@ ipcRenderer.on('settings-data', (event, settings) => {
     rateLimitValue.value = settings.rateLimit.value;
     proxyEnabled.checked = settings.proxy.enabled;
     proxyValue.value = settings.proxy.value;
+    githubProxyToggle.checked = settings.githubProxy !== false;
 
     if (settings.theme) {
         applyTheme(settings.theme);
@@ -368,6 +448,9 @@ ipcRenderer.on('settings-data', (event, settings) => {
     } else {
         systemNotificationToggle.checked = true;
     }
+
+    setNotificationScope(settings.systemNotificationScope || 'all');
+    updateNotificationScopeVisibility();
 
     if (settings.rememberCookie !== undefined) {
         rememberCookieToggle.checked = settings.rememberCookie;
@@ -507,12 +590,7 @@ document.addEventListener('drop', (e) => {
     if (files.length > 0) {
         const file = files[0];
         if (file.name.endsWith('.json')) {
-            let filePath = '';
-            try {
-                filePath = webUtils.getPathForFile(file) || '';
-            } catch (err) {
-                filePath = '';
-            }
+            const filePath = (file && typeof file.path === 'string') ? file.path : '';
             if (filePath) {
                 ipcRenderer.send('import-settings-from-path', filePath);
             } else {
@@ -533,12 +611,12 @@ const helpContent = {
         content: '<p>设置下载文件的默认保存路径。所有下载的文件都会保存到这个目录中。</p><p>点击"浏览"按钮可以选择文件夹。</p>'
     },
     maxConcurrentTasks: {
-        title: '任务并行数',
+        title: '并行数',
         content: '<p>同时进行的下载任务数量。增加此值可以同时下载更多视频，但会增加系统资源占用。</p><p>建议值：3-5</p>'
     },
     concurrency: {
-        title: '并发数',
-        content: '<p>单个下载任务的最大并发连接数。增加此值可以提高下载速度，但更高的值可能会触发服务器监控机制。</p><p>该配置选项不会影响"直链下载"模式。</p><p>建议值：8-16</p>'
+        title: '分片数',
+        content: '<p>单个下载任务的分片（并发连接）数量，对应 yt-dlp 的并发分片下载。增加此值可以提高下载速度，但更高的值可能会触发服务器监控机制。</p><p>该配置选项不会影响"直链下载"模式。</p><p>建议值：8-16</p>'
     },
     forceIpv4: {
         title: 'IPV4/IPV6',
@@ -567,6 +645,10 @@ const helpContent = {
     proxy: {
         title: '代理',
         content: '<p>通过代理服务器进行下载。支持HTTP/HTTPS/SOCKS代理。</p><p>示例：<br><code>http://127.0.0.1:8080</code><br><code>socks5://127.0.0.1:1080</code></p>'
+    },
+    githubProxy: {
+        title: 'GitHub 下载优化',
+        content: '<p>开启后，直链模式检测到链接来自 GitHub 时，会自动通过 <code>gh-proxy.com</code> 代理下载，改善国内访问速度。</p><p>仅影响直链模式，默认开启。</p>'
     },
     theme: {
         title: '主题',
@@ -602,11 +684,23 @@ const helpContent = {
     },
     systemNotificationOnComplete: {
         title: '完成时系统通知',
-        content: '<p>开启后，每当有任务完成时，将通过Windows系统通知中心推送通知。</p><p>关闭后仅显示应用内的通知。</p><p>可能会因为权限问题无法通知。</p>'
+        content: '<p>开启后，任务完成或失败时将通过Windows系统通知中心推送通知。</p><p>关闭后仅显示应用内的通知。</p><p>可能会因为权限问题无法通知。</p>'
+    },
+    systemNotificationScope: {
+        title: '通知范围',
+        content: '<p>控制系统通知的触发范围。</p><p><strong>全部：</strong>任务完成和出错时都会通知。<br><strong>错误：</strong>只有任务出错时才通知。</p><p>默认：全部</p>'
     },
     cookiePool: {
         title: 'Cookie池',
         content: '<p>用于统一存放 Cookie txt 文件的目录，默认是系统文档文件夹下的 Mycookies。</p><p>在 Cookie 管理中导入的 Cookie 会复制到这里，您也可以在设置中切换到其他目录。</p><p>更换目录后，旧目录中的文件不会自动移动，需要时请手动处理。</p>'
+    },
+    logPath: {
+        title: '日志存储路径',
+        content: '<p>存放运行日志的目录，默认是安装目录下的 logs 文件夹。</p><p>每次启动会生成一个以启动时间命名的日志文件，记录下载、解析、报错以及设置变更等行为。</p><p>更换目录后，新日志会写入新目录，旧日志不会自动迁移。</p>'
+    },
+    clearLogs: {
+        title: '清空日志',
+        content: '<p>删除日志存储路径下的所有日志文件。</p><p>此操作不可撤销。</p>'
     },
     rememberCookie: {
         title: '记住Cookie',
@@ -653,4 +747,58 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && helpModal.classList.contains('show')) {
         helpModal.classList.remove('show');
     }
+});
+
+const settingsGroups = document.querySelectorAll('.settings-group[data-group]');
+const COLLAPSE_STORE_KEY = 'fetchit-settings-collapsed-groups';
+let collapsedGroups = [];
+try {
+    const stored = JSON.parse(localStorage.getItem(COLLAPSE_STORE_KEY) || '[]');
+    if (Array.isArray(stored)) collapsedGroups = stored;
+} catch (e) {
+    collapsedGroups = [];
+}
+
+function expandSettingsGroup(group) {
+    const body = group.querySelector('.settings-group-body');
+    if (!body) return;
+    const target = body.scrollHeight;
+    group.classList.remove('collapsed');
+    body.style.maxHeight = target + 'px';
+    const done = (e) => {
+        if (e.target !== body || e.propertyName !== 'max-height') return;
+        body.style.maxHeight = '';
+        body.removeEventListener('transitionend', done);
+    };
+    body.addEventListener('transitionend', done);
+}
+
+function collapseSettingsGroup(group) {
+    const body = group.querySelector('.settings-group-body');
+    if (!body) return;
+    body.style.maxHeight = body.scrollHeight + 'px';
+    void body.offsetHeight;
+    group.classList.add('collapsed');
+    body.style.maxHeight = '0px';
+}
+
+settingsGroups.forEach(group => {
+    const key = group.dataset.group;
+    if (collapsedGroups.includes(key)) group.classList.add('collapsed');
+    const header = group.querySelector('.settings-group-header');
+    if (!header) return;
+    header.addEventListener('click', () => {
+        const willCollapse = !group.classList.contains('collapsed');
+        if (willCollapse) {
+            collapseSettingsGroup(group);
+        } else {
+            expandSettingsGroup(group);
+        }
+        const index = collapsedGroups.indexOf(key);
+        if (willCollapse && index === -1) collapsedGroups.push(key);
+        if (!willCollapse && index !== -1) collapsedGroups.splice(index, 1);
+        try {
+            localStorage.setItem(COLLAPSE_STORE_KEY, JSON.stringify(collapsedGroups));
+        } catch (e) {}
+    });
 });

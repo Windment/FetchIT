@@ -1,4 +1,4 @@
-const { ipcRenderer, webUtils } = require('electron');
+const { ipcRenderer, clipboard } = require('electron');
 
 window.addEventListener('error', (event) => {
     try {
@@ -21,6 +21,7 @@ window.addEventListener('unhandledrejection', (event) => {
 
 let notificationDuration = 3000;
 let systemNotificationOnComplete = true;
+let systemNotificationScope = 'all';
 let rememberCookie = true;
 let rememberUserAgent = true;
 let hasTasks = false;
@@ -71,6 +72,9 @@ ipcRenderer.on('settings-data', (event, settings) => {
     if (settings.systemNotificationOnComplete !== undefined) {
         systemNotificationOnComplete = settings.systemNotificationOnComplete;
     }
+    if (settings.systemNotificationScope) {
+        systemNotificationScope = settings.systemNotificationScope;
+    }
     if (settings.rememberCookie !== undefined) {
         rememberCookie = settings.rememberCookie;
     }
@@ -83,8 +87,9 @@ ipcRenderer.on('notification-duration-updated', (event, duration) => {
     notificationDuration = duration * 1000;
 });
 
-ipcRenderer.on('system-notification-updated', (event, enabled) => {
-    systemNotificationOnComplete = enabled;
+ipcRenderer.on('system-notification-updated', (event, flags) => {
+    systemNotificationOnComplete = flags.onComplete !== false;
+    systemNotificationScope = flags.scope || 'all';
 });
 
 ipcRenderer.on('remember-settings-updated', (event, data) => {

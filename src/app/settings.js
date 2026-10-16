@@ -11,10 +11,16 @@ ipcMain.on('get-settings', (event) => {
 ipcMain.on('reset-settings', (event) => {
     ctx.settings = { ...ctx.defaultSettings };
     ctx.ensureDirectoryExists(ctx.settings.savePath);
+    try { ctx.ensureDirectoryExists(ctx.settings.logPath); } catch (_) {}
+    log.setLogDir(ctx.settings.logPath);
     ctx.saveSettingsToFile();
+    log.info('settings', 'Settings reset to defaults');
     if (ctx.mainWindow) {
         ctx.mainWindow.webContents.send('notification-duration-updated', ctx.settings.notificationDuration || 3);
-        ctx.mainWindow.webContents.send('system-notification-updated', ctx.settings.systemNotificationOnComplete !== false);
+        ctx.mainWindow.webContents.send('system-notification-updated', {
+            onComplete: ctx.settings.systemNotificationOnComplete !== false,
+            scope: ctx.settings.systemNotificationScope || 'all'
+        });
         ctx.mainWindow.webContents.send('remember-settings-updated', {
             rememberCookie: ctx.settings.rememberCookie !== false,
             rememberUserAgent: ctx.settings.rememberUserAgent !== false
@@ -26,6 +32,7 @@ ipcMain.on('reset-settings', (event) => {
 ipcMain.on('save-settings', (event, newSettings) => {
     const prevRememberCookie = ctx.settings.rememberCookie;
     const prevRememberUserAgent = ctx.settings.rememberUserAgent;
+    const prevLogPath = ctx.settings.logPath;
     ctx.settings = { ...ctx.settings, ...newSettings };
     if (prevRememberCookie && !ctx.settings.rememberCookie) {
         ctx.settings.lastCookiePath = '';
@@ -35,11 +42,18 @@ ipcMain.on('save-settings', (event, newSettings) => {
     }
     ctx.ensureDirectoryExists(ctx.settings.savePath);
     try { ctx.ensureDirectoryExists(ctx.settings.cookiePool); } catch (_) {}
+    try { ctx.ensureDirectoryExists(ctx.settings.logPath); } catch (_) {}
     ctx.saveSettingsToFile();
-    log.info('settings', `设置已保存：关闭行为=${ctx.settings.closeBehavior}，并行数=${ctx.settings.maxConcurrentTasks}，并发数=${ctx.settings.concurrency}`);
+    if (prevLogPath !== ctx.settings.logPath) {
+        log.setLogDir(ctx.settings.logPath);
+    }
+    log.info('settings', `Settings saved: closeBehavior=${ctx.settings.closeBehavior}, maxConcurrentTasks=${ctx.settings.maxConcurrentTasks}, concurrency=${ctx.settings.concurrency}, savePath=${ctx.settings.savePath}, cookiePool=${ctx.settings.cookiePool}, logPath=${ctx.settings.logPath}`);
     if (ctx.mainWindow) {
         ctx.mainWindow.webContents.send('notification-duration-updated', ctx.settings.notificationDuration || 3);
-        ctx.mainWindow.webContents.send('system-notification-updated', ctx.settings.systemNotificationOnComplete !== false);
+        ctx.mainWindow.webContents.send('system-notification-updated', {
+            onComplete: ctx.settings.systemNotificationOnComplete !== false,
+            scope: ctx.settings.systemNotificationScope || 'all'
+        });
         ctx.mainWindow.webContents.send('remember-settings-updated', {
             rememberCookie: ctx.settings.rememberCookie !== false,
             rememberUserAgent: ctx.settings.rememberUserAgent !== false
@@ -54,8 +68,39 @@ ipcMain.on('select-save-path', async (event) => {
     });
 
     if (!result.canceled && result.filePaths.length > 0) {
+        log.info('settings', `Save path selected: ${result.filePaths[0]}`);
         event.reply('save-path-selected', result.filePaths[0]);
     }
+});
+
+ipcMain.on('select-log-path', async (event) => {
+    const result = await dialog.showOpenDialog(ctx.mainWindow, {
+        properties: ['openDirectory', 'createDirectory']
+    });
+
+    if (!result.canceled && result.filePaths.length > 0) {
+        log.info('settings', `Log path selected: ${result.filePaths[0]}`);
+        event.reply('log-path-selected', result.filePaths[0]);
+    }
+});
+
+ipcMain.on('clear-logs', (event) => {
+    const current = log.getLogFilePath();
+    const dir = current ? path.dirname(current) : ctx.settings.logPath;
+    let removed = 0;
+    try {
+        fs.readdirSync(dir).forEach((name) => {
+            if (!name.toLowerCase().endsWith('.log')) return;
+            try {
+                fs.unlinkSync(path.join(dir, name));
+                removed++;
+            } catch (_) {}
+        });
+        log.info('settings', `Logs cleared (${removed} files)`);
+    } catch (error) {
+        log.error('settings', 'Failed to clear logs:', error);
+    }
+    event.reply('logs-cleared', { removed });
 });
 
 ipcMain.on('select-background-image', async (event) => {
@@ -102,8 +147,10 @@ ipcMain.on('export-settings', async (event) => {
     if (!result.canceled && result.filePath) {
         try {
             fs.writeFileSync(result.filePath, JSON.stringify(ctx.settings, null, 4), 'utf8');
+            log.info('settings', `Settings exported to ${result.filePath}`);
             event.reply('settings-exported', true);
         } catch (error) {
+            log.error('settings', 'Failed to export settings:', error);
             event.reply('settings-exported', false);
         }
     }
@@ -119,8 +166,10 @@ ipcMain.on('import-settings', async (event) => {
         try {
             const data = fs.readFileSync(result.filePaths[0], 'utf8');
             const importedSettings = JSON.parse(data);
+            log.info('settings', `Settings imported from ${result.filePaths[0]}`);
             event.reply('settings-imported', importedSettings);
         } catch (error) {
+            log.error('settings', 'Failed to import settings:', error);
             event.reply('settings-imported', null);
         }
     }
@@ -130,8 +179,10 @@ ipcMain.on('import-settings-from-path', (event, filePath) => {
     try {
         const data = fs.readFileSync(filePath, 'utf8');
         const importedSettings = JSON.parse(data);
+        log.info('settings', `Settings imported from ${filePath}`);
         event.reply('settings-imported', importedSettings);
     } catch (error) {
+        log.error('settings', 'Failed to import settings:', error);
         event.reply('settings-imported', null);
     }
 });
@@ -139,7 +190,10 @@ ipcMain.on('import-settings-from-path', (event, filePath) => {
 ipcMain.on('apply-imported-settings', (event, importedSettings) => {
     ctx.settings = { ...ctx.defaultSettings, ...importedSettings };
     ctx.ensureDirectoryExists(ctx.settings.savePath);
+    try { ctx.ensureDirectoryExists(ctx.settings.logPath); } catch (_) {}
+    log.setLogDir(ctx.settings.logPath);
     ctx.saveSettingsToFile();
+    log.info('settings', 'Imported settings applied');
     if (ctx.mainWindow) {
         ctx.mainWindow.webContents.send('notification-duration-updated', ctx.settings.notificationDuration || 3);
     }

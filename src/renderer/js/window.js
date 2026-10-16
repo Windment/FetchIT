@@ -96,6 +96,14 @@ document.getElementById('aboutBtn').addEventListener('click', () => {
     aboutModalOverlay.classList.add('show');
 });
 
+document.querySelectorAll('.about-link').forEach((link) => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = link.dataset.url;
+        if (url) ipcRenderer.send('open-external', url);
+    });
+});
+
 document.getElementById('aboutModalClose').addEventListener('click', closeAboutModal);
 aboutModalOverlay.addEventListener('click', closeAboutModal);
 

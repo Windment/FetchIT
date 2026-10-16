@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, shell, ipcMain, clipboard } = require('electron');
+const { app, BrowserWindow, Tray, Menu, shell, ipcMain } = require('electron');
 const path = require('path');
 const log = require('./logger');
 const ctx = require('./context');
@@ -23,12 +23,12 @@ function createMainWindow() {
     ctx.mainWindow.setAspectRatio(1000 / 750);
 
     ctx.mainWindow.webContents.on('render-process-gone', (_e, details) => {
-        log.error('window', '渲染进程异常退出：', details && details.reason);
+        log.error('window', 'Renderer process crashed:', details && details.reason);
     });
 
     ctx.mainWindow.once('ready-to-show', () => {
         ctx.mainWindow.show();
-        log.info('window', '主窗口已创建并显示');
+        log.info('window', 'Main window created and shown');
     });
 
     ctx.mainWindow.on('close', (e) => {
@@ -45,11 +45,11 @@ function createMainWindow() {
         }
         if (ctx.settings.closeBehavior === 'minimize') {
             e.preventDefault();
-            log.info('window', '关闭窗口：最小化到系统托盘');
+            log.info('window', 'Window close: minimizing to tray');
             if (ctx.settings.openOutputOnClose) shell.openPath(ctx.settings.savePath);
             minimizeToTray();
         } else {
-            log.info('window', '关闭窗口：退出程序');
+            log.info('window', 'Window close: quitting app');
             if (ctx.settings.openOutputOnClose) shell.openPath(ctx.settings.savePath);
             if (ctx.tray) { ctx.tray.destroy(); ctx.tray = null; }
         }
@@ -77,7 +77,7 @@ function createTray() {
             {
                 label: '退出 FetchIT',
                 click: () => {
-                    log.info('tray', '用户通过托盘菜单退出');
+                    log.info('tray', 'User quit via tray menu');
                     ctx.forceQuit = true;
                     if (ctx.tray) { ctx.tray.destroy(); ctx.tray = null; }
                     app.quit();
@@ -87,9 +87,9 @@ function createTray() {
         ctx.tray.setContextMenu(contextMenu);
         ctx.tray.on('click', () => { restoreFromTray(); });
         ctx.tray.on('double-click', () => { restoreFromTray(); });
-        log.info('tray', '系统托盘已创建');
+        log.info('tray', 'System tray created');
     } catch (err) {
-        log.error('tray', '托盘创建失败：', err);
+        log.error('tray', 'Failed to create tray:', err);
     }
 }
 
@@ -98,14 +98,14 @@ function restoreFromTray() {
     if (ctx.mainWindow.isMinimized()) ctx.mainWindow.restore();
     ctx.mainWindow.show();
     ctx.mainWindow.focus();
-    log.debug('window', '从托盘恢复主窗口');
+    log.debug('window', 'Restoring main window from tray');
 }
 
 function minimizeToTray() {
     createTray();
     if (ctx.mainWindow) {
         ctx.mainWindow.hide();
-        log.info('window', '窗口已隐藏到托盘');
+        log.info('window', 'Window hidden to tray');
         if (process.platform === 'darwin') app.dock && app.dock.hide && app.dock.hide();
     }
 }
@@ -118,7 +118,7 @@ function onSecondInstance() {
 }
 
 function applyCloseChoice(action, remember) {
-    log.info('window', `用户选择关闭行为：${action}${remember ? '（不再询问）' : ''}`);
+    log.info('window', `User chose close behavior: ${action}${remember ? ' (remembered)' : ''}`);
     if (remember) {
         ctx.settings.closeBehavior = action;
         ctx.saveSettingsToFile();
@@ -136,7 +136,7 @@ function applyCloseChoice(action, remember) {
 }
 
 ipcMain.on('minimize-window', () => {
-    log.debug('window', '最小化窗口');
+    log.debug('window', 'Minimizing window');
     ctx.mainWindow.minimize();
 });
 
@@ -160,17 +160,18 @@ ipcMain.on('open-output-folder', () => {
     shell.openPath(ctx.settings.savePath);
 });
 
-//Electron 44 起渲染进程无法直接访问 clipboard 模块，统一走 IPC
-ipcMain.handle('read-clipboard-text', () => {
-    try {
-        return clipboard.readText();
-    } catch (err) {
-        log.error('window', '读取剪贴板失败：', err);
-        return '';
+ipcMain.on('open-folder', (_event, dirPath) => {
+    if (typeof dirPath === 'string' && dirPath) {
+        shell.openPath(dirPath);
     }
 });
 
-//渲染进程日志转发（脱敏后输出到命令行）
+ipcMain.on('open-external', (_event, url) => {
+    if (typeof url === 'string' && /^https?:\/\//i.test(url)) {
+        shell.openExternal(url);
+    }
+});
+
 ipcMain.on('renderer-log', (_event, payload) => {
     try {
         const level = payload && payload.level;
